@@ -14,9 +14,11 @@ public class FootballLeague implements ILeague {
 
 	private ArrayList<FootballTeam> teams;
 	private ArrayList<Match> matches = new ArrayList<>();
+	private Date startDate;
 
 	public FootballLeague() {
 		teams = new ArrayList<>();
+		startDate = new Date(2020, 9, 11);
 	}
 
 	@Override
@@ -50,6 +52,7 @@ public class FootballLeague implements ILeague {
 		BufferedReader breader = new BufferedReader(new InputStreamReader(dstream, "UTF-8"));
 		String str = "";
 
+		int lineCounter = 1;
 		while ((str = breader.readLine()) != null) {
 
 			Player player = new Player();
@@ -88,6 +91,8 @@ public class FootballLeague implements ILeague {
 			if (isHere == false) {
 				team.setMAX_PLAYER(40);
 				team.setMIN_PLAYER(20);
+				team.setImgIcon(Integer.toString(lineCounter));
+				lineCounter++;
 				teams.add(team);
 				player.setTeam(teams.get(teams.indexOf(team)));
 				teams.get(teams.indexOf(team)).addPlayer(player);
@@ -105,21 +110,26 @@ public class FootballLeague implements ILeague {
 		// reference : http://www.nuhazginoglu.com/tag/fixture-algorithm/
 
 		int n = teams.size();
-		int randIndex = new Random().nextInt(n);
-		FootballTeam constantTeam = teams.get(randIndex);
+		int dayCounter = 255;
+		Random rnd = new Random();
+		FootballTeam constantTeam = teams.get(rnd.nextInt(n));
 		teams.remove(constantTeam);
 		n = teams.size();
 
+		int dateMatchCounter = 0;
+		int year = 2020;
+
 		// in this algorithm, we delete the first element and call it constantTeam
 		for (int i = 0; i < n; i++) {
-			matches.add(new Match(constantTeam, teams.get(0)));
+
+			matches.add(new Match(constantTeam, teams.get(0),null));
 			// in every iteration constantTeam plays with first element of array.
 
 			for (int j = 0; j < (n - 1) / 2; j++) {
 				// in the inner loop teams match with symmetric order in array
 				// for ex: 1:6, 2:5, 3:4 and so on until the half.
-				matches.add(new Match(teams.get(j + 1), teams.get(n - j - 1)));
-				System.out.println(teams.get(j + 1).getName() + "-" + teams.get(n - j - 1).getName());
+				matches.add(new Match(teams.get(j + 1), teams.get(n - j - 1), null));
+
 			}
 
 			// We right-shift the array.
@@ -130,6 +140,9 @@ public class FootballLeague implements ILeague {
 				teams.set(j, prevTeam);
 				prevTeam = shiftTeam;
 			}
+
+			dateMatchCounter = 0;
+
 		}
 
 		teams.add(constantTeam);
@@ -146,13 +159,42 @@ public class FootballLeague implements ILeague {
 
 		matches.clear(); // obtaining last form of the fixture.
 		matches.addAll(tempMatches);
+
+	
+
 		tempMatches.clear();
 		int s = 0;
 
 		for (Match m : matches) { // adding second-term of league. vice-versa matches.
-			tempMatches.add(new Match(m.getAwayTeam(), m.getHostTeam()));
+			tempMatches.add(new Match(m.getAwayTeam(), m.getHostTeam(), getExactDate(60, 2020)));
 		}
 		matches.addAll(tempMatches);
+		
+		// Setting date for each match..
+		int dateRepeatCount = 0;
+		for (int j = 0; j < matches.size(); j++) {
+
+			if (j % 10 == 0) {
+				dateRepeatCount = rnd.nextInt(4) + 1;
+				dateMatchCounter=0;
+				dayCounter += 7;
+			}
+			
+			if (dayCounter > 365) {
+				dayCounter = dayCounter % 365;
+				year++;
+			}
+			matches.get(j).setDate(getExactDate(dayCounter, year));
+
+			if (dateMatchCounter == dateRepeatCount) { // same day match limit reached
+				dayCounter++;
+				dateMatchCounter = 0; // for new week
+				dateRepeatCount = rnd.nextInt(4) + 1;
+			}
+			else {
+				dateMatchCounter++;
+			}
+		}
 
 	}
 
@@ -168,7 +210,32 @@ public class FootballLeague implements ILeague {
 		return false;
 	}
 
+	public Date getExactDate(int dayOfTheYear, int year) {
+
+		ArrayList<Integer> monthDays = new ArrayList<>();
+		int sum = 0;
+		Collections.addAll(monthDays, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+		if (year % 4 == 0)
+			monthDays.set(1, 29);
+
+		int month = 0;
+		while (sum < dayOfTheYear) {
+			sum += monthDays.get(month);
+			month++;
+		}
+
+		sum = 0;
+		for (int i = 0; i < month - 1; i++) {
+			sum += monthDays.get(i);
+		}
+
+		return new Date(year, month, dayOfTheYear - sum);
+
+	}
+
 	@Override
+
 	public void makeTransfer(Player player, FootballTeam newTeam) {
 		if (newTeam.getPlayers().size() < 40 && player.getTeam().getPlayers().size() > 20
 				&& newTeam.getBudget() > player.getValue()) {

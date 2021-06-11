@@ -3,7 +3,7 @@ public class User {
 	
 	
 	private String username;
-	private SportsTeam team;
+	private FootballTeam team;
 	
 	public User() {}
 	public User(String username) {
@@ -17,11 +17,11 @@ public class User {
 		this.username = username;
 	}
 
-	public SportsTeam getTeam() {
+	public FootballTeam getTeam() {
 		return team;
 	}
 
-	public void setTeam(SportsTeam team) {
+	public void setTeam(FootballTeam team) {
 		this.team = team;
 	}
 	

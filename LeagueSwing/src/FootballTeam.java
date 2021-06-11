@@ -3,6 +3,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
+
 public class FootballTeam extends SportsTeam {
 	
 
@@ -10,6 +12,7 @@ public class FootballTeam extends SportsTeam {
 	private int tieCount;
 	private int goalScored;
 	private int goalTaken;
+	private ImageIcon imgIcon;
 	private ArrayList<FootballTeam> possibleOpponents;
 	
 	public FootballTeam() {
@@ -17,6 +20,16 @@ public class FootballTeam extends SportsTeam {
 	}
 	
 	
+	public ImageIcon getImgIcon() {
+		return imgIcon;
+	}
+
+
+	public void setImgIcon(String index) {
+		this.imgIcon=new ImageIcon("logos\\"+index+".png");
+	}
+
+
 	public FootballTeam getRandomOpponent() {
 		return possibleOpponents.get(new Random().nextInt(possibleOpponents.size()));
 	}

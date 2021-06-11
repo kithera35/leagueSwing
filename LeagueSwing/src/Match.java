@@ -4,14 +4,26 @@ public class Match {
 	private SportsTeam hostTeam;
 	private SportsTeam awayTeam;
 	private boolean result;
+	private Date date;
 	
 	
 	
-	public Match(SportsTeam hostTeam, SportsTeam awayTeam) {
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	
+	public Match(SportsTeam hostTeam, SportsTeam awayTeam, Date date) {
+		super();
 		this.hostTeam = hostTeam;
 		this.awayTeam = awayTeam;
+		this.date = date;
 	}
-	
+
 	public SportsTeam getHostTeam() {
 		return hostTeam;
 	}

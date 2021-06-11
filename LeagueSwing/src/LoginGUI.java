@@ -41,20 +41,24 @@ public class LoginGUI extends JFrame {
 
 	public LoginGUI() throws IOException {
 
-		ImageIcon imgLogin=new ImageIcon("sportoto.png");
-		FootballLeague lg = new FootballLeague();
+		
+		FootballLeague lg = new FootballLeague();   // Creating league
 		lg.createAllTeams();
 		lg.createFixture();
+		
+		// Creating components
 		JLabel lblTitle = new JLabel("Sports League Managament System");
 		JLabel lblSelectTeam = new JLabel("Select Team");
 		JLabel lblUsername = new JLabel("Username");
-		
+		ImageIcon imgLogin=new ImageIcon("sportoto.png");
 		JLabel lblImage = new JLabel(imgLogin);
 		JButton btnLogin = new JButton("Login");
 		JComboBox comboBoxSelectTeam = new JComboBox(lg.getTeamString());
-		user = new User();
+		
+		user = new User();   // init user
 		user.setTeam(lg.getTeam(comboBoxSelectTeam.getItemAt(0).toString()));
 
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 673, 663);
 		contentPane = new JPanel();

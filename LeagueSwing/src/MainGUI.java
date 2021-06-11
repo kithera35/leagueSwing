@@ -28,7 +28,7 @@ public class MainGUI extends JFrame {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		setBounds(500, 500, 649, 432);
+		setBounds(500, 500, 1280, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -37,26 +37,30 @@ public class MainGUI extends JFrame {
 
 		// panels for tab screen
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(5, 5, 789, 461);
+		tabbedPane.setBounds(5, 5, 1261, 678);
 		contentPane.add(tabbedPane);
 
 		JPanel panelFixture = new JPanel();
 		tabbedPane.addTab("Fixture", null, panelFixture, null);
 
-		String[] columnNames = { "HOST", "SCORE", "SCORE", "AWAY" };
+		String[] columnNames = {"DATE", "HOST", "SCORE", "SCORE", "AWAY" };
 
-		data = new String[lg.getTeams().size() / 2][4];
+		data = new String[lg.getTeams().size() / 2][5];
 		for (int i = 0; i < lg.getTeams().size() / 2; i++) {
-			data[i][0] = lg.getMatches().get(i).getHostTeam().getName();
-			data[i][1] = "0";
+			Date date=lg.getMatches().get(i).getDate();
+			data[i][0] = date.getDay()+"."+date.getMonth()+"."+date.getYear();
+			data[i][1] = lg.getMatches().get(i).getHostTeam().getName();
 			data[i][2] = "0";
-			data[i][3] = lg.getMatches().get(i).getAwayTeam().getName();
+			data[i][3] = "0";
+			data[i][4] = lg.getMatches().get(i).getAwayTeam().getName();
 
 		}
 		panelFixture.setLayout(null);
 
 		table = new JTable(data, columnNames);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		table.setBounds(1, 25, 450, 0);
+		table.setRowHeight(64);
 
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -68,18 +72,18 @@ public class MainGUI extends JFrame {
 		panelFixture.add(table);
 
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(0, 10, 619, 236);
+		scrollPane.setBounds(0, 10, 1246, 505);
 		panelFixture.add(scrollPane);
 
 		JLabel lblWeek = new JLabel("Week " + week);
 		lblWeek.setHorizontalAlignment(SwingConstants.CENTER);
 		lblWeek.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 16));
-		lblWeek.setBounds(253, 268, 117, 48);
+		lblWeek.setBounds(617, 552, 117, 48);
 		panelFixture.add(lblWeek);
 
 		JButton btnPrevWeek = new JButton("<- Previous Week");
 		btnPrevWeek.setFont(new Font("Arial", Font.BOLD, 14));
-		btnPrevWeek.setBounds(26, 269, 168, 48);
+		btnPrevWeek.setBounds(257, 553, 168, 48);
 		panelFixture.add(btnPrevWeek);
 		btnPrevWeek.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -88,10 +92,13 @@ public class MainGUI extends JFrame {
 					lblWeek.setText("Week " + week);
 
 					for (int i = 0; i < lg.getTeams().size() / 2; i++) {
-						data[i][0] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
-						data[i][1] = "0";
+						Date date=lg.getMatches().get(i + (10 * (week - 1))).getDate();
+						data[i][0] = date.getDay()+"."+date.getMonth()+"."+date.getYear();
+						
+						data[i][1] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
 						data[i][2] = "0";
-						data[i][3] = lg.getMatches().get(i + 10 * (week - 1)).getAwayTeam().getName();
+						data[i][3] = "0";
+						data[i][4] = lg.getMatches().get(i + 10 * (week - 1)).getAwayTeam().getName();
 						repaint();
 
 					}
@@ -102,7 +109,7 @@ public class MainGUI extends JFrame {
 
 		JButton btnNextWeek = new JButton("Next Week ->");
 		btnNextWeek.setFont(new Font("Arial", Font.BOLD, 14));
-		btnNextWeek.setBounds(427, 269, 187, 48);
+		btnNextWeek.setBounds(875, 539, 187, 48);
 		panelFixture.add(btnNextWeek);
 		btnNextWeek.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -111,10 +118,13 @@ public class MainGUI extends JFrame {
 					lblWeek.setText("Week " + week);
 
 					for (int i = 0; i < lg.getTeams().size() / 2; i++) {
-						data[i][0] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
-						data[i][1] = "0";
+						
+						Date date=lg.getMatches().get(i + (10 * (week - 1))).getDate();
+						data[i][0] = date.getDay()+"."+date.getMonth()+"."+date.getYear();
+						data[i][1] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
 						data[i][2] = "0";
-						data[i][3] = lg.getMatches().get(i + (10 * (week - 1))).getAwayTeam().getName();
+						data[i][3] = "0";
+						data[i][4] = lg.getMatches().get(i + (10 * (week - 1))).getAwayTeam().getName();
 						repaint();
 
 					}
@@ -147,6 +157,10 @@ public class MainGUI extends JFrame {
 		lblRanking.setFont(new Font("Calibri Light", Font.BOLD, 14));
 		lblRanking.setBounds(24, 192, 271, 29);
 		panelProfile.add(lblRanking);
+		
+		JLabel lblTeamLogo = new JLabel(user.getTeam().getImgIcon());
+		lblTeamLogo.setBounds(251, 10, 500, 500);
+		panelProfile.add(lblTeamLogo);
 
 		JPanel panelStandings = new JPanel();
 		tabbedPane.addTab("Standings", null, panelStandings, null);
