@@ -8,6 +8,6 @@ public interface ILeague {
 	public void createFixture();
 	public boolean isBudgetEnough(FootballTeam team) ;
 	public boolean isSizeofTeamConvenient(FootballTeam team) ;
-	public void makeTransfer(Player playerToTransfer) ;
+	public void makeTransfer(Player playerToTransfer,FootballTeam newTeam);
 	
 }

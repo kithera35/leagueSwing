@@ -144,12 +144,12 @@ public class FootballLeague implements ILeague {
 			}
 		}
 
-		matches.clear();      // obtaining last form of the fixture.
+		matches.clear(); // obtaining last form of the fixture.
 		matches.addAll(tempMatches);
 		tempMatches.clear();
 		int s = 0;
-		
-		for (Match m : matches) {  // adding second-term of league. vice-versa matches.
+
+		for (Match m : matches) { // adding second-term of league. vice-versa matches.
 			tempMatches.add(new Match(m.getAwayTeam(), m.getHostTeam()));
 		}
 		matches.addAll(tempMatches);
@@ -169,13 +169,38 @@ public class FootballLeague implements ILeague {
 	}
 
 	@Override
-	public void makeTransfer(Player playerToTransfer) {
-		// TODO Auto-generated method stub
-
+	public void makeTransfer(Player player, FootballTeam newTeam) {
+		if (newTeam.getPlayers().size() < 40 && player.getTeam().getPlayers().size() > 20
+				&& newTeam.getBudget() > player.getValue()) {
+			newTeam.addPlayer(player);
+			player.getTeam().removePlayer(player);
+			newTeam.setBudget(newTeam.getBudget() - player.getValue());
+		}
 	}
 
 	public ArrayList<FootballTeam> getTeams() {
 		return teams;
+	}
+
+	public String[] getTeamString() {
+
+		String[] teams = new String[getTeams().size()];
+
+		for (int i = 0; i < teams.length; i++) {
+			teams[i] = getTeams().get(i).getName();
+		}
+
+		return teams;
+	}
+
+	public FootballTeam getTeam(String team) {
+
+		for (FootballTeam t : teams) {
+			if (t.getName().equals(team)) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public void setTeams(ArrayList<FootballTeam> teams) {
