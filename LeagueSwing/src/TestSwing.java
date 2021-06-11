@@ -72,6 +72,7 @@ public class TestSwing extends JFrame {
 		tabbedPane.addTab("Fixture", null, panelFixture, null);
 
 		String[] columnNames = { "HOST", "SCORE", "SCORE", "AWAY" };
+		
 		data = new String[lg.getTeams().size() / 2][4];
 		for (int i = 0; i < lg.getTeams().size() / 2; i++) {
 			data[i][0] = lg.getMatches().get(i).getHostTeam().getName();
@@ -105,7 +106,6 @@ public class TestSwing extends JFrame {
 				if(week>1) {
 					week--;
 					lblWeek.setText("Week " + week);
-					System.out.println(week);
 
 					for (int i = 0; i < lg.getTeams().size() / 2; i++) {
 						data[i][0] = lg.getMatches().get(i+(10*(week-1))).getHostTeam().getName();
@@ -127,7 +127,6 @@ public class TestSwing extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(week<((lg.getTeams().size()-1)*2)) {
 					week++;
-					System.out.println(week);
 					lblWeek.setText("Week " + week);
 
 					for (int i = 0; i < lg.getTeams().size() / 2; i++) {
