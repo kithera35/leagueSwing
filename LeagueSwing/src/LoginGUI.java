@@ -41,24 +41,23 @@ public class LoginGUI extends JFrame {
 
 	public LoginGUI() throws IOException {
 
-		
-		FootballLeague lg = new FootballLeague();   // Creating league
+		final FootballLeague lg;
+		lg = FootballLeague.getLeague();
 		lg.createAllTeams();
 		lg.createFixture();
-		
+
 		// Creating components
 		JLabel lblTitle = new JLabel("Sports League Managament System");
 		JLabel lblSelectTeam = new JLabel("Select Team");
 		JLabel lblUsername = new JLabel("Username");
-		ImageIcon imgLogin=new ImageIcon("sportoto.png");
+		ImageIcon imgLogin = new ImageIcon("sportoto.png");
 		JLabel lblImage = new JLabel(imgLogin);
 		JButton btnLogin = new JButton("Login");
 		JComboBox comboBoxSelectTeam = new JComboBox(lg.getTeamString());
-		
-		user = new User();   // init user
+
+		user = new User(); // init user
 		user.setTeam(lg.getTeam(comboBoxSelectTeam.getItemAt(0).toString()));
 
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 673, 663);
 		contentPane = new JPanel();
@@ -105,12 +104,11 @@ public class LoginGUI extends JFrame {
 		btnLogin.setBounds(516, 256, 121, 45);
 		contentPane.add(btnLogin);
 
-		
 		lblTitle.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		lblTitle.setBounds(29, 10, 294, 45);
 		contentPane.add(lblTitle);
 
-		// combobox 
+		// combobox
 		comboBoxSelectTeam.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				user.setTeam(
@@ -124,8 +122,7 @@ public class LoginGUI extends JFrame {
 		lblSelectTeam.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSelectTeam.setBounds(459, 15, 162, 34);
 		contentPane.add(lblSelectTeam);
-		
-		
+
 		lblImage.setBounds(0, 124, 500, 500);
 		contentPane.add(lblImage);
 

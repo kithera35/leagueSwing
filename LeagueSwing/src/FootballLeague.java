@@ -12,13 +12,23 @@ import java.util.Random;
 
 public class FootballLeague implements ILeague {
 
+	private static FootballLeague league;
+	
 	private ArrayList<FootballTeam> teams;
-	private ArrayList<Match> matches = new ArrayList<>();
+	private ArrayList<Match> matches;
 	private Date startDate;
 
-	public FootballLeague() {
+	private FootballLeague() {
+		matches = new ArrayList<>();
 		teams = new ArrayList<>();
 		startDate = new Date(2020, 9, 11);
+	}
+
+	public static FootballLeague getLeague() {
+		if(league==null) {
+			league=new FootballLeague();
+		}
+		return league;
 	}
 
 	@Override
@@ -40,6 +50,8 @@ public class FootballLeague implements ILeague {
 				sumBudgetOfPlayers += p.getValue();
 			}
 			team.setBudget(sumBudgetOfPlayers / 15);
+			team.determinePower(team.getPlayers());
+			team.determineFirstEleven();
 		}
 	}
 
@@ -92,6 +104,7 @@ public class FootballLeague implements ILeague {
 				team.setMAX_PLAYER(40);
 				team.setMIN_PLAYER(20);
 				team.setImgIcon(Integer.toString(lineCounter));
+		
 				lineCounter++;
 				teams.add(team);
 				player.setTeam(teams.get(teams.indexOf(team)));
@@ -122,7 +135,7 @@ public class FootballLeague implements ILeague {
 		// in this algorithm, we delete the first element and call it constantTeam
 		for (int i = 0; i < n; i++) {
 
-			matches.add(new Match(constantTeam, teams.get(0),null));
+			matches.add(new Match(constantTeam, teams.get(0), null));
 			// in every iteration constantTeam plays with first element of array.
 
 			for (int j = 0; j < (n - 1) / 2; j++) {
@@ -160,8 +173,6 @@ public class FootballLeague implements ILeague {
 		matches.clear(); // obtaining last form of the fixture.
 		matches.addAll(tempMatches);
 
-	
-
 		tempMatches.clear();
 		int s = 0;
 
@@ -169,17 +180,17 @@ public class FootballLeague implements ILeague {
 			tempMatches.add(new Match(m.getAwayTeam(), m.getHostTeam(), getExactDate(60, 2020)));
 		}
 		matches.addAll(tempMatches);
-		
+
 		// Setting date for each match..
 		int dateRepeatCount = 0;
 		for (int j = 0; j < matches.size(); j++) {
 
 			if (j % 10 == 0) {
 				dateRepeatCount = rnd.nextInt(4) + 1;
-				dateMatchCounter=0;
+				dateMatchCounter = 0;
 				dayCounter += 7;
 			}
-			
+
 			if (dayCounter > 365) {
 				dayCounter = dayCounter % 365;
 				year++;
@@ -190,15 +201,179 @@ public class FootballLeague implements ILeague {
 				dayCounter++;
 				dateMatchCounter = 0; // for new week
 				dateRepeatCount = rnd.nextInt(4) + 1;
-			}
-			else {
+			} else {
 				dateMatchCounter++;
 			}
 		}
 
 	}
 
+	public void makeMatch(Match match) {
+
+		Random rnd = new Random();
+		int powerTeam1 = rnd.nextInt(match.getHostTeam().getTeamStrength()) + 10;
+		int powerTeam2 = rnd.nextInt(match.getAwayTeam().getTeamStrength()) + 10;
+
+		int team1Score = 0;
+		int team2Score = 0;
+
+		if (Math.abs(powerTeam1 - powerTeam2) <= 10) { // tie
+
+			team1Score = rnd.nextInt(4);
+			team2Score = team1Score;
+			match.getHostTeam().increaseTieCount();
+			match.getAwayTeam().increaseTieCount();
+
+		} else {
+			if (powerTeam1 > powerTeam2) {
+				team1Score = rnd.nextInt(powerTeam1 / 10) + 1;
+				team2Score = rnd.nextInt(team1Score);
+				match.getHostTeam().increaseWinCount();
+				match.getAwayTeam().increaseLossCount();
+
+			} else {
+				team2Score = rnd.nextInt(powerTeam2 / 10) + 1;
+				team1Score = rnd.nextInt(team2Score);
+				match.getAwayTeam().increaseWinCount();
+				match.getHostTeam().increaseLossCount();
+			}
+		}
+
+		match.setHostTeamScore(team1Score);
+		match.setAwayTeamScore(team2Score);
+
+		match.getHostTeam().increaseGoalScored(team1Score); // increase goal score of teams
+		match.getAwayTeam().increaseGoalScored(team2Score);
+
+		match.getHostTeam().increaseAssistCount(team1Score); // increase assist score of teams
+		match.getAwayTeam().increaseAssistCount(team2Score);
+
+		match.getHostTeam().increaseGoalTaken(team2Score); // increase taken goal of teams
+		match.getAwayTeam().increaseGoalTaken(team1Score);
+
+		for (int i = 0; i < team1Score; i++) { // define which players goal score for host team
+
+			Goal goal = new Goal();
+
+			int index = rnd.nextInt(12) + 1;
+			int indexAssist = rnd.nextInt(10);
+			int whichPLayerScore;
+			int whichPLayerAssist;
+			String playerNameOfScorer;
+			String playerNameOfAssister;
+			if (index <= 2) { // if goal scorer position def
+				whichPLayerScore = rnd.nextInt(4);
+				goal.setScorePlayer(match.getHostTeam().getDEFplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getHostTeam().getDEFplayers().get(whichPLayerScore).getName();
+			} else if (index > 2 && index <= 6) { // if goal scorer position mid
+				whichPLayerScore = rnd.nextInt(4);
+				goal.setScorePlayer(match.getHostTeam().getMIDplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getHostTeam().getMIDplayers().get(whichPLayerScore).getName();
+			} else { // if goal scorer position fw
+				whichPLayerScore = rnd.nextInt(2);
+				goal.setScorePlayer(match.getHostTeam().getFWplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getHostTeam().getFWplayers().get(whichPLayerScore).getName();
+			}
+
+			// goal.setScorePlayer(match.getHostTeam().DEFplayers.get(whichPLayerScore));
+			while (match.getHostTeam().getFirstEleven().get(indexAssist).getName()
+					.equals(goal.getScorePlayer().getName())
+					|| match.getHostTeam().getFirstEleven().get(indexAssist).getPosition().equals("GK")) {
+
+				indexAssist = rnd.nextInt(10);
+			}
+			goal.setAssistPlayer(match.getHostTeam().getFirstEleven().get(indexAssist));
+
+			playerNameOfAssister = match.getHostTeam().getFirstEleven().get(indexAssist).getName();
+
+			for (Player p : match.getHostTeam().getPlayers()) {
+				if (p.getName().equals(playerNameOfScorer)) {
+					p.increaseScoreCount();
+				} else if (p.getName().equals(playerNameOfAssister)) {
+					p.incraseAssistCount();
+				}
+			}
+
+			match.addGoals(goal);
+		}
+
+		for (int i = 0; i < team2Score; i++) { // define which players goal score for away team
+
+			Goal goal = new Goal();
+
+			int index = rnd.nextInt(12) + 1;
+			int indexAssist = rnd.nextInt(11);
+			int whichPLayerScore;
+			int whichPLayerAssist;
+			String playerNameOfScorer;
+			String playerNameOfAssister;
+			if (index <= 2) { // if goal scorer position def
+				whichPLayerScore = rnd.nextInt(4);
+				goal.setScorePlayer(match.getAwayTeam().getDEFplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getAwayTeam().getDEFplayers().get(whichPLayerScore).getName();
+			} else if (index > 2 && index <= 6) { // if goal scorer position mid
+				whichPLayerScore = rnd.nextInt(4);
+				goal.setScorePlayer(match.getAwayTeam().getMIDplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getAwayTeam().getMIDplayers().get(whichPLayerScore).getName();
+			} else { // if goal scorer position fw
+				whichPLayerScore = rnd.nextInt(2);
+				goal.setScorePlayer(match.getAwayTeam().getFWplayers().get(whichPLayerScore));
+				playerNameOfScorer = match.getAwayTeam().getFWplayers().get(whichPLayerScore).getName();
+			}
+
+			// goal.setScorePlayer(match.getAwayTeam().DEFplayers.get(whichPLayerScore));
+			while (match.getAwayTeam().getFirstEleven().get(indexAssist).getName()
+					.equals(goal.getScorePlayer().getName())
+					|| match.getAwayTeam().getFirstEleven().get(indexAssist).getPosition().equals("GK")) {
+
+				indexAssist = rnd.nextInt(11);
+			}
+			goal.setAssistPlayer(match.getAwayTeam().getFirstEleven().get(indexAssist));
+			playerNameOfAssister = match.getAwayTeam().getFirstEleven().get(indexAssist).getName();
+
+			for (Player p : match.getAwayTeam().getPlayers()) {
+				if (p.getName().equals(playerNameOfScorer)) {
+					p.increaseScoreCount();
+				} else if (p.getName().equals(playerNameOfAssister)) {
+					p.incraseAssistCount();
+				}
+			}
+
+			match.addGoals(goal);
+		}
+
+		int average = 0;
+		if (match.getGoals().size() != 0)
+			average = 90 / match.getGoals().size();
+		int goalMinutes = 0;
+		int increase = 0;
+
+		Collections.shuffle(match.getGoals());
+		for (int i = 0; i < match.getGoals().size(); i++) {
+			goalMinutes = rnd.nextInt(average) + increase;
+			increase += average;
+			match.getGoals().get(i).setGoalMinutes(goalMinutes);
+
+		}
+
+		System.out.println("maç sonucu ");
+		System.out.println(match.getHostTeam().getName() + " score: " + match.getHostTeamScore());
+		System.out.println(match.getAwayTeam().getName() + " score: " + match.getAwayTeamScore());
+
+		for (Goal g : match.getGoals()) {
+			System.out.println();
+			System.out.println("golü atan: " + g.getScorePlayer().getName() + " "
+					+ g.getScorePlayer().getTeam().getName() + " " + g.getScorePlayer().getPosition());
+			System.out.println(
+					"asist yapan: " + g.getAssistPlayer().getName() + " " + g.getAssistPlayer().getTeam().getName());
+			System.out.println("golü dakikasý: " + g.getGoalMinutes());
+			System.out.println(" **************     ");
+		}
+
+	}
+
 	@Override
+
 	public boolean isBudgetEnough(FootballTeam team) {
 		// TODO Auto-generated method stub
 		return false;

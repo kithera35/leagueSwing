@@ -1,13 +1,16 @@
+import java.util.ArrayList;
 
 public class Match {
-	
-	private SportsTeam hostTeam;
-	private SportsTeam awayTeam;
+
+	private FootballTeam hostTeam;
+	private FootballTeam awayTeam;
+	private ArrayList<Goal> goals = new ArrayList<Goal>();
 	private boolean result;
+
+	private int hostTeamScore;
+	private int awayTeamScore;
 	private Date date;
-	
-	
-	
+
 	public Date getDate() {
 		return date;
 	}
@@ -16,35 +19,59 @@ public class Match {
 		this.date = date;
 	}
 
-	
-	public Match(SportsTeam hostTeam, SportsTeam awayTeam, Date date) {
+	public Match(FootballTeam hostTeam, FootballTeam awayTeam, Date date) {
 		super();
 		this.hostTeam = hostTeam;
 		this.awayTeam = awayTeam;
 		this.date = date;
 	}
 
-	public SportsTeam getHostTeam() {
+	public ArrayList<Goal> getGoals() {
+		return goals;
+	}
+
+	public void addGoals(Goal goal) {
+		this.goals.add(goal);
+	}
+
+	public int getHostTeamScore() {
+		return hostTeamScore;
+	}
+
+	public void setHostTeamScore(int hostTeamScore) {
+		this.hostTeamScore = hostTeamScore;
+	}
+
+	public int getAwayTeamScore() {
+		return awayTeamScore;
+	}
+
+	public void setAwayTeamScore(int awayTeamScore) {
+		this.awayTeamScore = awayTeamScore;
+	}
+
+	public FootballTeam getHostTeam() {
 		return hostTeam;
 	}
-	public void setHostTeam(SportsTeam hostTeam) {
+
+	public void setHostTeam(FootballTeam hostTeam) {
 		this.hostTeam = hostTeam;
 	}
-	public SportsTeam getAwayTeam() {
+
+	public FootballTeam getAwayTeam() {
 		return awayTeam;
 	}
-	public void setAwayTeam(SportsTeam awayTeam) {
+
+	public void setAwayTeam(FootballTeam awayTeam) {
 		this.awayTeam = awayTeam;
 	}
+
 	public boolean isResult() {
 		return result;
 	}
+
 	public void setResult(boolean result) {
 		this.result = result;
 	}
-	
-	
-	
-	
 
 }

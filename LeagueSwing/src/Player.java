@@ -5,7 +5,9 @@ public class Player extends SportsPlayer {
 	private boolean foot;
 	private int height;
 	private double value;
-
+	private int scoreCount;
+	private int assistCount;
+	
 	public String getPosition() {
 		return position;
 	}
@@ -28,6 +30,15 @@ public class Player extends SportsPlayer {
 
 	public void setHeight(int parseInt) {
 
+	}
+	public void increaseScoreCount() {
+		this.scoreCount++;
+	}
+	public int getAssistCount() {
+		return assistCount;
+	}
+	public  void incraseAssistCount() {
+		this.assistCount++;
 	}
 
 	public int getHeight() {

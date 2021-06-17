@@ -49,6 +49,12 @@ public abstract class SportsTeam {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public void increaseWinCount() {
+		this.winCount ++;
+	}
+	public void increaseLossCount() {
+		this.lossCount ++;
+	}
 	public int getWinCount() {
 		return winCount;
 	}
