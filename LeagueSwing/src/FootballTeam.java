@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 
 public class FootballTeam extends SportsTeam {
 
+	
 	private int tieCount;
 	private int goalScored;
 	private int goalTaken;
