@@ -8,7 +8,7 @@ public abstract class SportsTeam {
 	private int point;
 	private int winCount;
 	private int lossCount;
-	private ArrayList<Player> players=new ArrayList<Player>();
+	private ArrayList<Player> players;
 	private int MAX_PLAYER;
 	private int MIN_PLAYER;
 	private int teamStrength;
@@ -16,7 +16,9 @@ public abstract class SportsTeam {
 	private double budget;
 	private int currentPlayer;
 	
-	
+	public SportsTeam() {
+		players=new ArrayList<Player>();
+	}
 	
 	public int getMIN_PLAYER() {
 		return MIN_PLAYER;
