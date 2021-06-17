@@ -118,6 +118,7 @@ public class LoginGUI extends JFrame {
 		comboBoxSelectTeam.setBounds(459, 66, 162, 21);
 		contentPane.add(comboBoxSelectTeam);
 
+		
 		lblSelectTeam.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		lblSelectTeam.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSelectTeam.setBounds(459, 15, 162, 34);

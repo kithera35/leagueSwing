@@ -6,6 +6,7 @@ public class Match {
 	private FootballTeam awayTeam;
 	private ArrayList<Goal> goals = new ArrayList<Goal>();
 	private boolean result;
+	private boolean isPlayed;
 
 	private int hostTeamScore;
 	private int awayTeamScore;
@@ -15,12 +16,21 @@ public class Match {
 		return date;
 	}
 
+	public boolean isPlayed() {
+		return isPlayed;
+	}
+
+	public void setPlayed(boolean isPlayed) {
+		this.isPlayed = isPlayed;
+	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
 	public Match(FootballTeam hostTeam, FootballTeam awayTeam, Date date) {
 		super();
+		this.isPlayed=false;
 		this.hostTeam = hostTeam;
 		this.awayTeam = awayTeam;
 		this.date = date;

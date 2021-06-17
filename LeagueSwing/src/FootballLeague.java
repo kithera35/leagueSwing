@@ -211,9 +211,10 @@ public class FootballLeague implements ILeague {
 	public void makeMatch(Match match) {
 
 		Random rnd = new Random();
+		match.setPlayed(true);
 		int powerTeam1 = rnd.nextInt(match.getHostTeam().getTeamStrength()) + 10;
 		int powerTeam2 = rnd.nextInt(match.getAwayTeam().getTeamStrength()) + 10;
-
+			
 		int team1Score = 0;
 		int team2Score = 0;
 
@@ -223,6 +224,8 @@ public class FootballLeague implements ILeague {
 			team2Score = team1Score;
 			match.getHostTeam().increaseTieCount();
 			match.getAwayTeam().increaseTieCount();
+			match.getHostTeam().setPoint(match.getHostTeam().getPoint()+1);
+			match.getAwayTeam().setPoint(match.getAwayTeam().getPoint()+1);
 
 		} else {
 			if (powerTeam1 > powerTeam2) {
@@ -230,12 +233,14 @@ public class FootballLeague implements ILeague {
 				team2Score = rnd.nextInt(team1Score);
 				match.getHostTeam().increaseWinCount();
 				match.getAwayTeam().increaseLossCount();
+				match.getHostTeam().setPoint(match.getHostTeam().getPoint()+3);
 
 			} else {
 				team2Score = rnd.nextInt(powerTeam2 / 10) + 1;
 				team1Score = rnd.nextInt(team2Score);
 				match.getAwayTeam().increaseWinCount();
 				match.getHostTeam().increaseLossCount();
+				match.getAwayTeam().setPoint(match.getAwayTeam().getPoint()+3);
 			}
 		}
 
@@ -409,16 +414,42 @@ public class FootballLeague implements ILeague {
 
 	}
 
-	@Override
+	public void makeTransfer(Player player,FootballTeam newTeam) {
 
-	public void makeTransfer(Player player, FootballTeam newTeam) {
-		if (newTeam.getPlayers().size() < 40 && player.getTeam().getPlayers().size() > 20
-				&& newTeam.getBudget() > player.getValue()) {
-			newTeam.addPlayer(player);
-			player.getTeam().removePlayer(player);
-			newTeam.setBudget(newTeam.getBudget() - player.getValue());
-		}
-	}
+        boolean addingFlag=false;
+
+
+
+        if(player.getPosition().equals("GK")) {
+            if(player.getTeam().getAllGKplayers().size()>1) {
+                addingFlag=true;
+            }
+        }else if(player.getPosition().equals("DEF")) {
+            if(player.getTeam().getAllDEFplayers().size()>4) {
+                addingFlag=true;
+            }
+        }else if(player.getPosition().equals("MID")) {
+            if(player.getTeam().getAllMIDplayers().size()>4) {
+                addingFlag=true;
+            }
+        }else if(player.getPosition().equals("FW")) {
+            if(player.getTeam().getFWplayers().size()>2) {
+                addingFlag=true;
+            }
+        }
+
+        if(addingFlag==true) {
+            if(newTeam.getPlayers().size()<40 && player.getTeam().getPlayers().size()>20 && newTeam.getBudget()>player.getValue()) {
+                newTeam.addPlayer(player);
+                player.getTeam().removePlayer(player);
+                newTeam.setBudget(newTeam.getBudget()-player.getValue());
+            }
+
+        }else {
+            // print message to "not enough player to make transfer operations"
+        }
+
+    }
 
 	public ArrayList<FootballTeam> getTeams() {
 		return teams;

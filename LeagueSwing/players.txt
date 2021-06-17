@@ -56,10 +56,10 @@ G. Tore,28,176,FW,Besiktas,1,71
 V. Aboubakar,28,184,FW,Besiktas,1,75
 C. Larin,25,186,FW,Besiktas,1,75
 C. Tosun,29,183,FW,Besiktas,1,77
-F. Muslera,34,190,GP,Galatasaray,1,83
-O. Kocuk,25,188,GP,Galatasaray,1,71
-K. Ersunar,17,184,GP,Galatasaray,1,57
-F. Ozturk,34,191,GP,Galatasaray,1,71
+F. Muslera,34,190,GK,Galatasaray,1,83
+O. Kocuk,25,188,GK,Galatasaray,1,71
+K. Ersunar,17,184,GK,Galatasaray,1,57
+F. Ozturk,34,191,GK,Galatasaray,1,71
 R. Donk,34,192,DEF,Galatasaray,1,75
 C. Luyindama,26,191,DEF,Galatasaray,1,78
 Marcao Teixeira,24,185,DEF,Galatasaray,1,79
@@ -86,11 +86,11 @@ R. Falcao,34,177,FW,Galatasaray,1,83
 H. Dervisoglu,21,183,FW,Galatasaray,1,70
 O. Çaglayan,24,188,FW,Galatasaray,1,68
 Mostafa Mohamed,23,185,FW,Galatasaray,1,74
-M. Mohamedi,31,190,GP,Hatayspor,1,72
-Y. Boyar,22,190,GP,Hatayspor,1,57
-A. Alkan,31,186,GP,Hatayspor,1,69
-E. Kilicarslan,23,187,GP,Hatayspor,1,61
-E. Kirecci,17,181,GP,Hatayspor,1,55
+M. Mohamedi,31,190,GK,Hatayspor,1,72
+Y. Boyar,22,190,GK,Hatayspor,1,57
+A. Alkan,31,186,GK,Hatayspor,1,69
+E. Kilicarslan,23,187,GK,Hatayspor,1,61
+E. Kirecci,17,181,GK,Hatayspor,1,55
 S. Ornek,31,192,DEF,Hatayspor,1,62
 J. Billong,27,191,DEF,Hatayspor,1,69
 Pablo Santos,28,188,DEF,Hatayspor,1,75
@@ -121,10 +121,10 @@ A. Cinkir,18,177,FW,Hatayspor,1,56
 M. Kamara,23,174,FW,Hatayspor,1,64
 H. Akgul,18,174,FW,Hatayspor,1,55
 M. Diouf,33,185,FW,Hatayspor,1,70
-I. Sehic,32,190,GP,Konyaspor,1,72
-E. Birnican,32,188,GP,Konyaspor,1,63
-O. Oruc,20,191,GP,Konyaspor,1,61
-E. Ersu,26,194,GP,Konyaspor,1,62
+I. Sehic,32,190,GK,Konyaspor,1,72
+E. Birnican,32,188,GK,Konyaspor,1,63
+O. Oruc,20,191,GK,Konyaspor,1,61
+E. Ersu,26,194,GK,Konyaspor,1,62
 A. Demirbag,23,182,DEF,Konyaspor,1,68
 M. Anicic,31,192,DEF,Konyaspor,1,67
 A. Calik,26,184,DEF,Konyaspor,1,72
@@ -155,10 +155,10 @@ J. Sekidika,24,174,FW,Konyaspor,1,67
 S. Cikalleshi,30,185,FW,Konyaspor,1,70
 A. Kravets,31,189,FW,Konyaspor,1,71
 E. Daci,22,183,FW,Konyaspor,1,64
-A. Damlu,21,191,GP,Yeni Malatyaspor,1,57
-M. Aksit,18,184,GP,Yeni Malatyaspor,1,58
-E. Ozbir,31,187,GP,Yeni Malatyaspor,1,69
-E. Iscan,29,197,GP,Yeni Malatyaspor,1,58
+A. Damlu,21,191,GK,Yeni Malatyaspor,1,57
+M. Aksit,18,184,GK,Yeni Malatyaspor,1,58
+E. Ozbir,31,187,GK,Yeni Malatyaspor,1,69
+E. Iscan,29,197,GK,Yeni Malatyaspor,1,58
 Wallace,26,191,DEF,Yeni Malatyaspor,1,75
 T. Hadebe,25,185,DEF,Yeni Malatyaspor,1,67
 S. Kaya,29,184,DEF,Yeni Malatyaspor,1,70
@@ -187,10 +187,10 @@ U. Bulut,37,184,FW,Yeni Malatyaspor,1,68
 B. Tetteh,23,193,FW,Yeni Malatyaspor,1,71
 K. Kanatsizkus,23,190,FW,Yeni Malatyaspor,1,67
 A. Buyuk,33,167,FW,Yeni Malatyaspor,1,74
-M. Yildirim,30,190,GP,Sivasspor,1,66
-M. Samassa,30,198,GP,Sivasspor,1,75
-A. Vural,30,187,GP,Sivasspor,1,67
-M. Tuncer,20,185,GP,Sivasspor,1,56
+M. Yildirim,30,190,GK,Sivasspor,1,66
+M. Samassa,30,198,GK,Sivasspor,1,75
+A. Vural,30,187,GK,Sivasspor,1,67
+M. Tuncer,20,185,GK,Sivasspor,1,56
 A. Appindangoye,28,185,DEF,Sivasspor,1,71
 S. Camara,28,190,DEF,Sivasspor,1,67
 C. Osmanpasa,32,182,DEF,Sivasspor,1,70
@@ -487,6 +487,7 @@ G.Sio,31,180,FW,Genclerbirligi,1,73
 I.Karakas,21,187,FW,Genclerbirligi,1,58
 S.Altiparmak,19,185,FW,Genclerbirligi,1,59
 Sandro Lima,30,186,FW,Genclerbirligi,1,74
+R.Köse,31,193,GK,Kasimpasa,1,77
 O. Ozcan,19,164,FW,Kasimpasa,1,55
 I. Thelin,28,189,FW,Kasimpasa,1,73
 A. Hodžić,26,181,FW,Kasimpasa,1,72

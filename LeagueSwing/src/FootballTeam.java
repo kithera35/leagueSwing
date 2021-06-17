@@ -20,12 +20,57 @@ public class FootballTeam extends SportsTeam {
 	private ArrayList<Player> MIDplayers;
 	private ArrayList<Player> FWplayers;
 
+	private ArrayList<Player> allGKplayers;
+	private ArrayList<Player> allDEFplayers;
+	private ArrayList<Player> allMIDplayers;
+	private ArrayList<Player> allFWplayers;
+
 	public FootballTeam() {
 		possibleOpponents = new ArrayList<>();
 		firstEleven = new ArrayList<Player>();
 		DEFplayers = new ArrayList<Player>();
 		MIDplayers = new ArrayList<Player>();
 		FWplayers = new ArrayList<Player>();
+		allGKplayers = new ArrayList<Player>();
+		allDEFplayers = new ArrayList<Player>();
+		allMIDplayers = new ArrayList<Player>();
+		allFWplayers = new ArrayList<Player>();
+	}
+
+	public ArrayList<Player> getAllGKplayers() {
+		return allGKplayers;
+	}
+
+	public void setAllGKplayers(ArrayList<Player> allGKplayers) {
+		this.allGKplayers = allGKplayers;
+	}
+
+	public ArrayList<Player> getAllDEFplayers() {
+		return allDEFplayers;
+	}
+
+	public void setAllDEFplayers(ArrayList<Player> allDEFplayers) {
+		this.allDEFplayers = allDEFplayers;
+	}
+
+	public ArrayList<Player> getAllMIDplayers() {
+		return allMIDplayers;
+	}
+
+	public void setAllMIDplayers(ArrayList<Player> allMIDplayers) {
+		this.allMIDplayers = allMIDplayers;
+	}
+
+	public ArrayList<Player> getAllFWplayers() {
+		return allFWplayers;
+	}
+
+	public void setAllFWplayers(ArrayList<Player> allFWplayers) {
+		this.allFWplayers = allFWplayers;
+	}
+
+	public void setImgIcon(ImageIcon imgIcon) {
+		this.imgIcon = imgIcon;
 	}
 
 	public void determineFirstEleven() {
@@ -40,24 +85,40 @@ public class FootballTeam extends SportsTeam {
 
 		for (Player p : super.getPlayers()) {
 
-			if (p.getPosition().equals("GK") && GKcount == 0) {
-				firstEleven.add(p);
-				GKcount++;
+			if (p.getPosition().equals("GK")) {
+				allGKplayers.add(p);
+				if (GKcount == 0) {
+					firstEleven.add(p);
+					GKcount++;
+				}
+
 			}
-			if (p.getPosition().equals("DEF") && DEFcount < 4) {
-				firstEleven.add(p);
-				DEFplayers.add(p);
-				DEFcount++;
+			if (p.getPosition().equals("DEF")) {
+				allDEFplayers.add(p);
+				if (DEFcount < 4) {
+					firstEleven.add(p);
+					DEFplayers.add(p);
+					DEFcount++;
+				}
+
 			}
-			if (p.getPosition().equals("MID") && MIDcount < 4) {
-				firstEleven.add(p);
-				MIDplayers.add(p);
-				MIDcount++;
+			if (p.getPosition().equals("MID")) {
+				allMIDplayers.add(p);
+				if (MIDcount < 4) {
+					firstEleven.add(p);
+					MIDplayers.add(p);
+					MIDcount++;
+				}
+
 			}
-			if (p.getPosition().equals("FW") && FWcount < 2) {
-				firstEleven.add(p);
-				FWplayers.add(p);
-				FWcount++;
+			if (p.getPosition().equals("FW")) {
+				allFWplayers.add(p);
+				if (FWcount < 2) {
+					firstEleven.add(p);
+					FWplayers.add(p);
+					FWcount++;
+				}
+
 			}
 		}
 

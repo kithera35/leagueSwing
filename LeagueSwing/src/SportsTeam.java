@@ -5,9 +5,9 @@ public abstract class SportsTeam {
 	
 	
 	private String name;
-	private int point=0;
-	private int winCount=0;
-	private int lossCount=0;
+	private int point;
+	private int winCount;
+	private int lossCount;
 	private ArrayList<Player> players=new ArrayList<Player>();
 	private int MAX_PLAYER;
 	private int MIN_PLAYER;

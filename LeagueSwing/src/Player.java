@@ -1,13 +1,35 @@
 
 public class Player extends SportsPlayer {
 
+	
 	private String position;
+	private FootballTeam team;
 	private boolean foot;
 	private int height;
 	private double value;
 	private int scoreCount;
 	private int assistCount;
 	
+	public int getScoreCount() {
+		return scoreCount;
+	}
+
+	public void setScoreCount(int scoreCount) {
+		this.scoreCount = scoreCount;
+	}
+
+	public void setAssistCount(int assistCount) {
+		this.assistCount = assistCount;
+	}
+
+	public FootballTeam getTeam() {
+		return team;
+	}
+
+	public void setTeam(FootballTeam team) {
+		this.team = team;
+	}
+
 	public String getPosition() {
 		return position;
 	}
