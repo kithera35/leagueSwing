@@ -14,6 +14,9 @@ public class FootballTeam extends SportsTeam {
 	private ImageIcon imgIcon;
 	private ArrayList<FootballTeam> possibleOpponents;
 	private int assistCount;
+	private int ranking;
+
+	
 
 	private ArrayList<Player> firstEleven;
 	private Player goalKeeper;
@@ -39,6 +42,14 @@ public class FootballTeam extends SportsTeam {
 		allFWplayers = new ArrayList<Player>();
 	}
 	
+	
+	public int getRanking() {
+		return ranking;
+	}
+
+	public void setRanking(int ranking) {
+		this.ranking = ranking;
+	}
 	public void clearAllPlayers() {
 		getPlayers().clear();
 	}
