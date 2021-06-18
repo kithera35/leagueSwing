@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 
 public class FootballTeam extends SportsTeam {
 
-	
 	private int tieCount;
 	private int goalScored;
 	private int goalTaken;
@@ -17,6 +16,8 @@ public class FootballTeam extends SportsTeam {
 	private int assistCount;
 
 	private ArrayList<Player> firstEleven;
+	private Player goalKeeper;
+
 	private ArrayList<Player> DEFplayers;
 	private ArrayList<Player> MIDplayers;
 	private ArrayList<Player> FWplayers;
@@ -36,6 +37,55 @@ public class FootballTeam extends SportsTeam {
 		allDEFplayers = new ArrayList<Player>();
 		allMIDplayers = new ArrayList<Player>();
 		allFWplayers = new ArrayList<Player>();
+	}
+	
+	public void clearAllPlayers() {
+		getPlayers().clear();
+	}
+	public void addAllPlayers(ArrayList<Player> players) {
+		getPlayers().addAll(players);
+	}
+	
+	public void addDEF(Player player) {
+		DEFplayers.add(player);
+	}
+
+	public void addMID(Player player) {
+		MIDplayers.add(player);
+	}
+
+	public void addFW(Player player) {
+		FWplayers.add(player);
+	}
+	public void removeDEF(Player player) {
+		DEFplayers.remove(player);
+	}
+
+	public void removeMID(Player player) {
+		MIDplayers.remove(player);
+	}
+
+	public void removeFW(Player player) {
+		FWplayers.remove(player);
+	}
+
+	public void addFirstEleven(ArrayList<Player> players) {
+		this.firstEleven.addAll(players);
+	}
+	public void removeFirstEleven() {
+		this.firstEleven.clear();
+	}
+
+	public void addFirstEleven(Player player) {
+		this.firstEleven.add(player);
+	}
+
+	public Player getGoalKeeper() {
+		return goalKeeper;
+	}
+
+	public void setGoalKeeper(Player goalKeeper) {
+		this.goalKeeper = goalKeeper;
 	}
 
 	public ArrayList<Player> getAllGKplayers() {
@@ -90,6 +140,7 @@ public class FootballTeam extends SportsTeam {
 				allGKplayers.add(p);
 				if (GKcount == 0) {
 					firstEleven.add(p);
+					this.setGoalKeeper(p);
 					GKcount++;
 				}
 
@@ -241,8 +292,14 @@ public class FootballTeam extends SportsTeam {
 
 	}
 
-	private int determineMoral(ArrayList<Player> players) {
-		return 0;
-	}
+	public Player getPlayerByName(String name) {
+		ArrayList<Player> players = this.getPlayers();
+		for (Player p : players) {
+			if (name.equals(p.getName())) {
+				return p;
+			}
+		}
 
+		return null;
+	}
 }

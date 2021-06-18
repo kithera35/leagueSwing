@@ -1,20 +1,20 @@
-import static java.util.Comparator.comparing;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,49 +22,53 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class MainGUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTable table;
+	private JTable tableFixture;
 	String[][] data;
 	String[][] dataForScoreBoard;
+	String[][] dataCurrentPlayer;
+	String[][] dataReservePlayer;
 	private JTable tableForScoreBoard;
 	ArrayList<FootballTeam> sortedTeams;
 	int week = 1;
 
 	public ArrayList<FootballTeam> TeamsSortingForSB(ArrayList<FootballTeam> unSorted) {
-		int max=0;
+		int max = 0;
 		ArrayList<FootballTeam> sorted = new ArrayList();
 		FootballTeam tempTeam = null;
-		while(!unSorted.isEmpty()) {
-			max=-1;
+		while (!unSorted.isEmpty()) {
+			max = -1;
 			for (FootballTeam i : unSorted) {
-				if(i.getPoint()>max) {
+				if (i.getPoint() > max) {
 					max = i.getPoint();
 					tempTeam = i;
 				}
 			}
 			for (FootballTeam i : unSorted) {
-				if(i.getPoint()==max) {
-					
-					if((i.getGoalScored()-i.getGoalTaken())==(tempTeam.getGoalScored()-tempTeam.getGoalTaken())) {
-						
-						if(i.getGoalScored()==tempTeam.getGoalScored()) {
-							if(i.getName().compareTo(tempTeam.getName())<0) {
+				if (i.getPoint() == max) {
+
+					if ((i.getGoalScored() - i.getGoalTaken()) == (tempTeam.getGoalScored()
+							- tempTeam.getGoalTaken())) {
+
+						if (i.getGoalScored() == tempTeam.getGoalScored()) {
+							if (i.getName().compareTo(tempTeam.getName()) < 0) {
 								max = i.getPoint();
 								tempTeam = i;
 							}
 						}
-						
-						else if(i.getGoalScored()>tempTeam.getGoalScored()) {
+
+						else if (i.getGoalScored() > tempTeam.getGoalScored()) {
 							max = i.getPoint();
 							tempTeam = i;
 						}
-						
+
 					}
-					
-					else if((i.getGoalScored()-i.getGoalTaken())>(tempTeam.getGoalScored()-tempTeam.getGoalTaken())) {
+
+					else if ((i.getGoalScored() - i.getGoalTaken()) > (tempTeam.getGoalScored()
+							- tempTeam.getGoalTaken())) {
 						max = i.getPoint();
 						tempTeam = i;
 					}
-					
+
 				}
 			}
 			unSorted.remove(tempTeam);
@@ -102,6 +106,48 @@ public class MainGUI extends JFrame {
 		}
 	}
 
+	public void updateFirstElevenTable(String[][] dataCurrentPlayer, User user) {
+		FootballTeam team = user.getTeam();
+		team.removeFirstEleven();		
+		team.addFirstEleven(team.getFWplayers());
+		team.addFirstEleven(team.getMIDplayers());
+		team.addFirstEleven(team.getDEFplayers());
+		team.addFirstEleven(team.getGoalKeeper());					
+
+		ArrayList<Player> eleven = team.getFirstEleven();
+		for (int i = 0; i < eleven.size(); i++) { // fill the table with players in first eleven
+			dataCurrentPlayer[i][0] = eleven.get(i).getName();
+			dataCurrentPlayer[i][1] = eleven.get(i).getPosition();
+			dataCurrentPlayer[i][2] = Integer.toString(eleven.get(i).getStrength());
+		}
+	}
+
+	public void updateReservePlayerTable(String[][] dataReservePlayer, User user) {
+		FootballTeam team = user.getTeam();
+		ArrayList<Player> eleven = team.getFirstEleven();
+		
+		team.clearAllPlayers();		
+		team.addAllPlayers(team.getAllFWplayers());
+		team.addAllPlayers(team.getAllMIDplayers());
+		team.addAllPlayers(team.getAllDEFplayers());
+		team.addAllPlayers(team.getAllGKplayers());	
+		
+		int index = 0;
+
+		for (int i = 0; i < team.getPlayers().size(); i++) {
+			Player player = team.getPlayers().get(i);
+			if (!eleven.contains(player)) { // players except the first eleven
+
+				dataReservePlayer[index][0] = player.getName();
+				dataReservePlayer[index][1] = player.getPosition();
+				dataReservePlayer[index][2] = Integer.toString(player.getStrength());
+				index++;
+			}
+
+		}
+
+	}
+
 	public MainGUI(FootballLeague lg, User user) throws IOException {
 		sortedTeams = new ArrayList<FootballTeam>();
 
@@ -130,23 +176,25 @@ public class MainGUI extends JFrame {
 		updateScoreBoard(lg);
 		panelFixture.setLayout(null);
 
-		table = new JTable(data, columnNames);
-		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		table.setBounds(1, 25, 450, 0);
-		table.setRowHeight(64);
+		tableFixture = new JTable(data, columnNames);
+		tableFixture.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tableFixture.setBounds(1, 25, 450, 0);
+		tableFixture.setRowHeight(64);
+		tableFixture.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 
 		for (int i = 0; i < columnNames.length; i++) {
-			table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+			tableFixture.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 		}
 
-		panelFixture.add(table);
+		panelFixture.add(tableFixture);
 
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(0, 10, 1246, 505);
-		panelFixture.add(scrollPane);
+		JScrollPane scrollForFixtureTable = new JScrollPane(tableFixture);
+		scrollForFixtureTable.setBounds(0, 10, 1246, 505);
+		panelFixture.add(scrollForFixtureTable);
 
 		JLabel lblWeek = new JLabel("Week " + week);
 		lblWeek.setHorizontalAlignment(SwingConstants.CENTER);
@@ -224,10 +272,10 @@ public class MainGUI extends JFrame {
 
 				btnNextWeek.setEnabled(true);
 				btnPlay.setEnabled(false);
-				updateScoreBoard(lg);						
-				sortedTeams=TeamsSortingForSB(sortedTeams);	// sort scoreboard
+				updateScoreBoard(lg);
+				sortedTeams = TeamsSortingForSB(sortedTeams); // sort scoreboard
 				updateStandings(sortedTeams);
-				
+
 				repaint();
 
 			}
@@ -277,7 +325,7 @@ public class MainGUI extends JFrame {
 
 		String[] ScoreBoardcolumn = { "NO", "TEAM", "WEEK", "POINT", "WIN", "TIE", "DEFEAT", "GOAL SCORED",
 				"GOAL TAKEN", "AVERAGE" };
-		dataForScoreBoard = new String[sortedTeams.size()][10];
+		dataForScoreBoard = new String[sortedTeams.size()][ScoreBoardcolumn.length];
 
 		updateStandings(sortedTeams);
 
@@ -285,6 +333,7 @@ public class MainGUI extends JFrame {
 		tableForScoreBoard.setBounds(1, 25, 1244, 0);
 		tableForScoreBoard.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		tableForScoreBoard.setRowHeight(64);
+		tableForScoreBoard.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		panelStandings.setLayout(null);
 
 		DefaultTableCellRenderer dtcrforScoreBoard = new DefaultTableCellRenderer();
@@ -302,6 +351,125 @@ public class MainGUI extends JFrame {
 
 		JPanel panelArrangeTeam = new JPanel();
 		tabbedPane.addTab("Arrange Team", null, panelArrangeTeam, null);
+		panelArrangeTeam.setLayout(null);
+
+		JLabel lblCurrentPlayers = new JLabel("Current Players");
+		lblCurrentPlayers.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblCurrentPlayers.setBounds(89, 38, 141, 13);
+		panelArrangeTeam.add(lblCurrentPlayers);
+
+		JLabel lblReservePlayers = new JLabel("Reserve  Players");
+		lblReservePlayers.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblReservePlayers.setBounds(467, 38, 136, 13);
+		panelArrangeTeam.add(lblReservePlayers);
+
+		JButton btnChangePlayer = new JButton("Change Selected Players");
+
+		btnChangePlayer.setBackground(new Color(0, 255, 127));
+		btnChangePlayer.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnChangePlayer.setBounds(377, 502, 253, 98);
+		panelArrangeTeam.add(btnChangePlayer);
+			
+		JLabel lblShowTeamStrength = new JLabel("Total strength:"+" "+Integer.toString(user.getTeam().getTeamStrength()));
+		lblShowTeamStrength.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblShowTeamStrength.setBounds(56, 520, 185, 67);
+		panelArrangeTeam.add(lblShowTeamStrength);
+		
+		JTable tableCurrentPlayers;
+		JTable tableReservePlayers;
+		
+		
+
+		String[] playerDataColumn = { "NAME", "POSITION", "STRENGTH" };
+		dataCurrentPlayer = new String[user.getTeam().getFirstEleven().size()][playerDataColumn.length];
+		dataReservePlayer = new String[user.getTeam().getPlayers().size()
+				- user.getTeam().getFirstEleven().size()][playerDataColumn.length];
+
+		updateFirstElevenTable(dataCurrentPlayer, user);
+		updateReservePlayerTable(dataReservePlayer, user);
+
+		JScrollPane scrollForCurrentPlayers = new JScrollPane();
+		
+		scrollForCurrentPlayers.setBounds(10, 85, 279, 335);
+		panelArrangeTeam.add(scrollForCurrentPlayers);
+
+		tableCurrentPlayers = new JTable(dataCurrentPlayer, playerDataColumn);
+		tableCurrentPlayers.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollForCurrentPlayers.setViewportView(tableCurrentPlayers);
+
+		JScrollPane scrollForReservePlayers = new JScrollPane();
+		scrollForReservePlayers.setBounds(377, 85, 284, 335);
+		panelArrangeTeam.add(scrollForReservePlayers);
+
+		tableReservePlayers = new JTable(dataReservePlayer, playerDataColumn);
+		tableReservePlayers.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollForReservePlayers.setViewportView(tableReservePlayers);
+		
+		btnChangePlayer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// If user did not select two players to exchange
+				if(tableCurrentPlayers.getSelectedRow()==-1 ||tableReservePlayers.getSelectedRow()==-1 ) {
+					JOptionPane.showMessageDialog(null, "You MUST select two players from each list !", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+					return;  // quit function
+				}
+				FootballTeam team = user.getTeam();		
+				Player outPlayer = team.getPlayerByName(dataCurrentPlayer[tableCurrentPlayers.getSelectedRow()][0]);
+				Player inPlayer = team.getPlayerByName(dataReservePlayer[tableReservePlayers.getSelectedRow()][0]);
+				
+				
+				if (!outPlayer.getPosition().equals(inPlayer.getPosition())) {
+					JOptionPane.showMessageDialog(null, "You cannot change players with different positions !", "Error",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+
+					team.getFirstEleven().remove(outPlayer);  // players to be out and in
+					team.getFirstEleven().add(inPlayer);
+						
+					// setting up position arrays of the team
+					if (inPlayer.getPosition().equals("DEF")) {  
+						team.getDEFplayers().add(inPlayer);
+					}
+					else if (inPlayer.getPosition().equals("MID")) {
+						team.getMIDplayers().add(inPlayer);
+					}
+					else if (inPlayer.getPosition().equals("FW")) {
+						team.getFWplayers().add(inPlayer);
+					}
+					else {
+						team.setGoalKeeper(inPlayer);
+					}
+					
+					// out player position arrangement
+					if (outPlayer.getPosition().equals("DEF")) {  
+						team.removeDEF(outPlayer);
+					}
+					else if (outPlayer.getPosition().equals("MID")) {
+						team.removeMID(outPlayer);
+					}
+					else if (outPlayer.getPosition().equals("FW")) {
+						team.removeFW(outPlayer);
+					}
+									
+					// clearing first eleven to rearrange sorting by position	
+					
+					updateFirstElevenTable(dataCurrentPlayer, user);
+					updateReservePlayerTable(dataReservePlayer, user);
+					team.determinePower(team.getFirstEleven());
+					lblShowTeamStrength.setText("Total strength:"+" "+Integer.toString(user.getTeam().getTeamStrength()));
+					repaint();
+				}
+
+			}
+		});
+
+		JLabel lblPlayerChangeLogo = new JLabel(new ImageIcon("playerChange.png"));
+		lblPlayerChangeLogo.setBounds(671, 10, 585, 631);
+		panelArrangeTeam.add(lblPlayerChangeLogo);
+		
+		
 
 		JPanel panelPlayerMarket = new JPanel();
 		tabbedPane.addTab("Player Market", null, panelPlayerMarket, null);
