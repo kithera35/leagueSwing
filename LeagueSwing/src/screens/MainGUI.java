@@ -417,7 +417,9 @@ public class MainGUI extends JFrame {
 			}
 		});
 		btnNextWeek.setBackground(Color.GREEN);
-
+		
+		JLabel lblRanking = new JLabel("My Ranking: League isn't started yet.");
+		
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for (int i = 0; i < lg.getTeams().size() / 2; i++) { // making weekly matches
@@ -433,7 +435,19 @@ public class MainGUI extends JFrame {
 				updateStandings(sortedTeams);
 				updateStatsPanel(lg, dataGoalKingdom, dataAssistKingdom, dataBestScorerTeam, dataLeastScorerTeam,
 						dataTeamsWithTheMostGoalTaken, dataTeamsWithTheLeastGoalTaken);
-
+				
+				user.getTeam().setRanking(sortedTeams.indexOf(user.getTeam())+1);
+				lblRanking.setText("My Ranking: "+user.getTeam().getRanking());
+				
+				if(week==2*(lg.getTeams().size()-1)){
+					String str= "League has over ! Your ranking is :"+Integer.toString(sortedTeams.indexOf(user.getTeam())+1);
+					JOptionPane.showMessageDialog(null,str,"League is over!",JOptionPane.INFORMATION_MESSAGE);
+				}
+				else if(week==(lg.getTeams().size()-1)){
+					String str= "Half of the league has ended ! You can arrange your team and make transfer !";
+					JOptionPane.showMessageDialog(null,str,"Half - Time!",JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 				repaint();
 
 			}
@@ -453,7 +467,7 @@ public class MainGUI extends JFrame {
 		lblUsername.setBounds(24, 34, 271, 29);
 		panelProfile.add(lblUsername);
 
-		JLabel lblBudget = new JLabel("Budget:" + user.getTeam().getBudget());
+		JLabel lblBudget = new JLabel("Budget:" + String.format("%.2f", user.getTeam().getBudget())+"M$");
 		lblBudget.setFont(new Font("Calibri Light", Font.BOLD, 14));
 		lblBudget.setBounds(24, 88, 271, 29);
 		panelProfile.add(lblBudget);
@@ -463,7 +477,7 @@ public class MainGUI extends JFrame {
 		lblTeam.setBounds(24, 138, 271, 29);
 		panelProfile.add(lblTeam);
 
-		JLabel lblRanking = new JLabel("My Ranking:");
+		
 		lblRanking.setFont(new Font("Calibri Light", Font.BOLD, 14));
 		lblRanking.setBounds(24, 192, 271, 29);
 		panelProfile.add(lblRanking);
@@ -497,6 +511,7 @@ public class MainGUI extends JFrame {
 
 		DefaultTableCellRenderer dtcrforScoreBoard = new DefaultTableCellRenderer();
 		dtcrforScoreBoard.setHorizontalAlignment(SwingConstants.CENTER);
+		
 
 		for (int i = 0; i < ScoreBoardcolumn.length; i++) {
 			tableForScoreBoard.getColumnModel().getColumn(i).setCellRenderer(dtcrforScoreBoard);
@@ -616,14 +631,14 @@ public class MainGUI extends JFrame {
 						team.removeFW(outPlayer);
 					}
 
-					
+					// update rest of the things
 					updateFirstElevenTable(dataCurrentPlayer, user);
 					updateReservePlayerTable(dataReservePlayer, user);
 					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
 					updateTeamLineUpDisplay(labelFirstEleven, user, panelArrangeTeam);	
 					updatePlayerForSell(user);
 					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
-					team.determinePower(team.getFirstEleven());
+					team.determinePower(team.getFirstEleven());  // update power ofthe team
 
 					lblShowTeamStrength
 							.setText("Total strength:" + " " + Integer.toString(user.getTeam().getTeamStrength()));
@@ -775,7 +790,7 @@ public class MainGUI extends JFrame {
 		lblTeamNameForTransfer.setBounds(630, 10, 311, 51);
 		panelPlayerMarket.add(lblTeamNameForTransfer);
 
-		JLabel lblBudgetForTransfer = new JLabel("Budget: " + user.getTeam().getBudget());
+		JLabel lblBudgetForTransfer = new JLabel("Budget:"+String.format("%.2f", user.getTeam().getBudget())+"M$");
 		lblBudgetForTransfer.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblBudgetForTransfer.setBounds(1001, 10, 297, 51);
 		panelPlayerMarket.add(lblBudgetForTransfer);
@@ -820,8 +835,8 @@ public class MainGUI extends JFrame {
 					// tableReservePlayers = new JTable(dataReservePlayer, playerDataColumn);
 					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
 					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
-					lblBudgetForTransfer.setText("Budget: " + user.getTeam().getBudget());
-					lblBudget.setText("Budget: " + user.getTeam().getBudget());
+					lblBudgetForTransfer.setText("Budget: " + String.format("%.2f", user.getTeam().getBudget())+"M$");
+					lblBudget.setText("Budget: " + String.format("%.2f", user.getTeam().getBudget())+"M$");
 					repaint();
 				}
 			}
@@ -877,8 +892,8 @@ public class MainGUI extends JFrame {
 					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
 					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
 
-					lblBudgetForTransfer.setText("Budget: " + user.getTeam().getBudget());
-					lblBudget.setText("Budget: " + user.getTeam().getBudget());
+					lblBudgetForTransfer.setText("Budget: " + String.format("%.2f", user.getTeam().getBudget())+"M$");
+					lblBudget.setText("Budget: " + String.format("%.2f", user.getTeam().getBudget())+"M$");
 					repaint();
 				}
 			}

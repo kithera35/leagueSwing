@@ -12,7 +12,10 @@ public class FootballTeam extends SportsTeam {
 	private int tieCount;
 	private int goalScored;
 	private int goalTaken;
+
+
 	private ImageIcon imgIcon;
+	private ImageIcon littleImgIcon;
 	private ArrayList<FootballTeam> possibleOpponents;
 	private int assistCount;
 	private int ranking;
@@ -43,7 +46,18 @@ public class FootballTeam extends SportsTeam {
 		allFWplayers = new ArrayList<Player>();
 	}
 	
+	public ImageIcon getLittleImgIcon() {
+		return littleImgIcon;
+	}
+
+
+	public void setImgIcon(String index) {
+		this.imgIcon = new ImageIcon("logos\\" + index + ".png");
+	}
 	
+	public void setLittleImgIcon(String index) {
+		this.littleImgIcon = new ImageIcon("logosLogin\\" + index + ".png");
+	}
 	public int getRanking() {
 		return ranking;
 	}
@@ -204,9 +218,6 @@ public class FootballTeam extends SportsTeam {
 		return imgIcon;
 	}
 
-	public void setImgIcon(String index) {
-		this.imgIcon = new ImageIcon("logos\\" + index + ".png");
-	}
 
 	public FootballTeam getRandomOpponent() {
 		return possibleOpponents.get(new Random().nextInt(possibleOpponents.size()));

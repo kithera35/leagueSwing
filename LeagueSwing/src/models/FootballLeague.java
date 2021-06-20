@@ -115,7 +115,7 @@ public class FootballLeague implements ILeague {
 				team.setMAX_PLAYER(40);
 				team.setMIN_PLAYER(20);
 				team.setImgIcon(Integer.toString(lineCounter));
-
+				team.setLittleImgIcon(Integer.toString(lineCounter));
 				lineCounter++;
 				teams.add(team);
 				player.setTeam(teams.get(teams.indexOf(team)));
