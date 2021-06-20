@@ -1,3 +1,4 @@
+package screens;
 import static java.util.Comparator.comparing;
 
 import java.awt.Color;
@@ -5,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -22,6 +24,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import models.FootballLeague;
+import models.FootballTeam;
+import models.Player;
+import models.User;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -100,7 +107,7 @@ public class MainGUI extends JFrame {
 
 	public void updateScoreBoard(FootballLeague lg) { // function for updating scoreboard after pressing play button
 		for (int i = 0; i < lg.getTeams().size() / 2; i++) {
-			Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
+			models.Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
 			dataForFixture[i][0] = date.getDay() + "." + date.getMonth() + "." + date.getYear();
 			dataForFixture[i][1] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
 			dataForFixture[i][2] = Integer.toString(lg.getMatches().get(i + (10 * (week - 1))).getHostTeamScore());
@@ -359,7 +366,7 @@ public class MainGUI extends JFrame {
 					lblWeek.setText("Week " + week);
 
 					for (int i = 0; i < lg.getTeams().size() / 2; i++) {
-						Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
+						models.Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
 						dataForFixture[i][0] = date.getDay() + "." + date.getMonth() + "." + date.getYear();
 						dataForFixture[i][1] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
 						dataForFixture[i][2] = Integer
@@ -395,7 +402,7 @@ public class MainGUI extends JFrame {
 					lblWeek.setText("Week " + week);
 
 					for (int i = 0; i < (lg.getTeams().size() / 2); i++) { // updating table elements
-						Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
+						models.Date date = lg.getMatches().get(i + (10 * (week - 1))).getDate();
 						dataForFixture[i][0] = date.getDay() + "." + date.getMonth() + "." + date.getYear();
 						dataForFixture[i][1] = lg.getMatches().get(i + (10 * (week - 1))).getHostTeam().getName();
 						dataForFixture[i][2] = Integer

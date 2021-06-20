@@ -1,3 +1,4 @@
+package screens;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import models.FootballLeague;
+import models.User;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -42,7 +47,7 @@ public class LoginGUI extends JFrame {
 	public LoginGUI() throws IOException {
 
 		final FootballLeague lg;
-		lg = FootballLeague.getLeague();
+		lg = FootballLeague.getLeague();  // singleton design pattern
 		lg.createAllTeams();
 		lg.createFixture();
 
