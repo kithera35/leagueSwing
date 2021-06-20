@@ -108,9 +108,20 @@ public abstract class SportsTeam {
 	
 	public void addPlayer(Player e) {
 		this.players.add(e);
+		
 	}
+	
 	public void removePlayer(Player e) {
 		this.players.remove(e);
+		e.getTeam().getFirstEleven().remove(e);
+		e.getTeam().getDEFplayers().remove(e);
+		e.getTeam().getMIDplayers().remove(e);
+		e.getTeam().getFWplayers().remove(e);
+		e.getTeam().getAllGKplayers().remove(e);
+		e.getTeam().getAllDEFplayers().remove(e);
+		e.getTeam().getAllMIDplayers().remove(e);
+		e.getTeam().getAllFWplayers().remove(e);
+
 	}
 	
 	

@@ -25,6 +25,14 @@ public class FootballLeague implements ILeague {
 		startDate = new Date(2020, 9, 11);
 	}
 
+	public ArrayList<Player> getAllPlayers() {
+		return allPlayers;
+	}
+
+	public void setAllPlayers(ArrayList<Player> allPlayers) {
+		this.allPlayers = allPlayers;
+	}
+
 	public static FootballLeague getLeague() {
 		if (league == null) {
 			league = new FootballLeague();
@@ -214,7 +222,7 @@ public class FootballLeague implements ILeague {
 
 		Random rnd = new Random();
 		match.setPlayed(true);
-		int powerTeam1 = rnd.nextInt(match.getHostTeam().getTeamStrength()) + 10;
+		int powerTeam1 = rnd.nextInt(match.getHostTeam().getTeamStrength()) + 10; // setting powers
 		int powerTeam2 = rnd.nextInt(match.getAwayTeam().getTeamStrength()) + 10;
 
 		int team1Score = 0;
@@ -393,16 +401,16 @@ public class FootballLeague implements ILeague {
 	}
 
 	public Date getExactDate(int dayOfTheYear, int year) {
-
+		// this function returns the exact date depend on the year of the day.
 		ArrayList<Integer> monthDays = new ArrayList<>();
 		int sum = 0;
 		Collections.addAll(monthDays, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
-		if (year % 4 == 0)
+		if (year % 4 == 0) // leap year
 			monthDays.set(1, 29);
 
 		int month = 0;
-		while (sum < dayOfTheYear) {
+		while (sum < dayOfTheYear) {  // calculating
 			sum += monthDays.get(month);
 			month++;
 		}
@@ -416,39 +424,132 @@ public class FootballLeague implements ILeague {
 
 	}
 
-	public void makeTransfer(Player player, FootballTeam newTeam) {
+	public Player getPlayerByNameFromlg(String name) {
+		ArrayList<Player> players = this.allPlayers;
+		for (Player p : players) {
+			if (name.equals(p.getName())) {
+				return p;
+			}
+		}
 
-		boolean addingFlag = false;
+		return null;
+	}
+
+	public boolean SellPlayer(Player player, FootballLeague lg) {
+
+		boolean flag = true;
+		Random rnd = new Random();
+		int x;
+		while (true) {
+			x = rnd.nextInt(20);
+			if (!lg.getTeams().get(x).getName().equalsIgnoreCase(player.getTeam().getName())) {
+				break;
+			}
+		}
+
+		FootballTeam newTeam = lg.getTeams().get(x);
 
 		if (player.getPosition().equals("GK")) {
-			if (player.getTeam().getAllGKplayers().size() > 1) {
-				addingFlag = true;
+			if (player.getTeam().getAllGKplayers().size() <= 2) {
+				flag = false;
 			}
 		} else if (player.getPosition().equals("DEF")) {
-			if (player.getTeam().getAllDEFplayers().size() > 4) {
-				addingFlag = true;
+			if (player.getTeam().getAllDEFplayers().size() <= 5) {
+				flag = false;
 			}
 		} else if (player.getPosition().equals("MID")) {
-			if (player.getTeam().getAllMIDplayers().size() > 4) {
-				addingFlag = true;
+			if (player.getTeam().getAllMIDplayers().size() <= 5) {
+				flag = false;
 			}
 		} else if (player.getPosition().equals("FW")) {
-			if (player.getTeam().getFWplayers().size() > 2) {
-				addingFlag = true;
+			if (player.getTeam().getAllFWplayers().size() <= 3) {
+				flag = false;
+			}
+		}
+
+		if (player.getTeam().getPlayers().size() > 40 || player.getTeam().getPlayers().size() < 20) {
+			flag = false;
+		}
+
+		if (flag == true) {
+			player.getTeam().setBudget(player.getTeam().getBudget() + player.getValue());
+			newTeam.addPlayer(player);
+			player.getTeam().removePlayer(player);
+
+			player.setTeam(newTeam);
+			String pos = player.getPosition();
+			if (pos.equalsIgnoreCase("GK")) {
+				newTeam.getAllGKplayers().add(player);
+			} else if (pos.equalsIgnoreCase("DEF")) {
+				newTeam.getAllDEFplayers().add(player);
+			} else if (pos.equalsIgnoreCase("MID")) {
+				newTeam.getAllMIDplayers().add(player);
+			} else {
+				newTeam.getAllFWplayers().add(player);
+			}
+		}
+
+		return flag;
+
+	}
+
+	public boolean makeTransfer(Player player, FootballTeam newTeam) {
+
+		boolean addingFlag = true;
+
+		if (newTeam.getName().equalsIgnoreCase(player.getTeam().getName())) {
+			return addingFlag = false;
+		}
+		System.out.println("deneme1");
+		if (player.getPosition().equals("GK")) {
+			if (player.getTeam().getAllGKplayers().size() <= 1) {
+				addingFlag = false;
+			}
+		} else if (player.getPosition().equals("DEF")) {
+			if (player.getTeam().getAllDEFplayers().size() <= 6) {
+				addingFlag = false;
+			}
+		} else if (player.getPosition().equals("MID")) {
+			if (player.getTeam().getAllMIDplayers().size() <= 4) {
+				addingFlag = false;
+			}
+		} else if (player.getPosition().equals("FW")) {
+			if (player.getTeam().getAllFWplayers().size() <= 2) {
+				System.out.println("girmemesi lazým");
+				addingFlag = false;
 			}
 		}
 
 		if (addingFlag == true) {
-			if (newTeam.getPlayers().size() < 40 && player.getTeam().getPlayers().size() > 20
-					&& newTeam.getBudget() > player.getValue()) {
+			if (newTeam.getPlayers().size() > 40 || player.getTeam().getPlayers().size() < 20) {
+				System.out.println("size eror");
+				addingFlag = false;
+			}
+			if (newTeam.getBudget() < player.getValue()) {
+				System.out.println("bütçe eror");
+				addingFlag = false;
+			}
+
+			if (addingFlag == true) {
 				newTeam.addPlayer(player);
 				player.getTeam().removePlayer(player);
+
+				player.setTeam(newTeam);
+				String pozition = player.getPosition();
+				if (pozition.equalsIgnoreCase("GK")) {
+					newTeam.getAllGKplayers().add(player);
+				} else if (pozition.equalsIgnoreCase("DEF")) {
+					newTeam.getAllDEFplayers().add(player);
+				} else if (pozition.equalsIgnoreCase("MID")) {
+					newTeam.getAllMIDplayers().add(player);
+				} else {
+					newTeam.getAllFWplayers().add(player);
+				}
 				newTeam.setBudget(newTeam.getBudget() - player.getValue());
 			}
 
-		} else {
-			// print message to "not enough player to make transfer operations"
 		}
+		return addingFlag;
 
 	}
 

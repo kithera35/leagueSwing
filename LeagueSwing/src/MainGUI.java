@@ -1,9 +1,12 @@
+import static java.util.Comparator.comparing;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,11 +21,17 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTable tableFixture;
+	JTable tableCurrentPlayers;
+	JTable tableReservePlayers;
 	String[][] dataForFixture;
 	String[][] dataForScoreBoard;
 	String[][] dataCurrentPlayer;
@@ -33,8 +42,11 @@ public class MainGUI extends JFrame {
 	String[][] dataLeastScorerTeam;
 	String[][] dataTeamsWithTheMostGoalTaken;
 	String[][] dataTeamsWithTheLeastGoalTaken;
-
+	String[][] dataForTransfer;
+	String[][] dataForSellPlayer;
+	private JTable tableForPlayerMarket;
 	private JTable tableForScoreBoard;
+	private JTable tableForSellPlayer;
 	ArrayList<FootballTeam> sortedTeams;
 	int week = 1;
 
@@ -50,8 +62,10 @@ public class MainGUI extends JFrame {
 					tempTeam = i;
 				}
 			}
+			
+			// sorting players by average
 			for (FootballTeam i : unSorted) {
-				if (i.getPoint() == max) {
+				if (i.getPoint() == max) { 
 
 					if ((i.getGoalScored() - i.getGoalTaken()) == (tempTeam.getGoalScored()
 							- tempTeam.getGoalTaken())) {
@@ -93,6 +107,61 @@ public class MainGUI extends JFrame {
 			dataForFixture[i][3] = Integer.toString(lg.getMatches().get(i + (10 * (week - 1))).getAwayTeamScore());
 			dataForFixture[i][4] = lg.getMatches().get(i + (10 * (week - 1))).getAwayTeam().getName();
 
+		}
+
+	}
+
+	public void updatePlayerForSell(User user) {
+		int index = 0;
+		for (int i = 0; i < user.getTeam().getPlayers().size(); i++) {
+			if (!(user.getTeam().getFirstEleven().contains(user.getTeam().getPlayers().get(i)))) {
+				dataForSellPlayer[index][0] = user.getTeam().getPlayers().get(i).getName();
+				dataForSellPlayer[index][1] = user.getTeam().getPlayers().get(i).getPosition();
+				String pozition = user.getTeam().getPlayers().get(index).getPosition();
+				ArrayList<Player> templist;
+				if (pozition.equalsIgnoreCase("GK")) {
+					templist = user.getTeam().getPlayers().get(i).getTeam().getAllGKplayers();
+				} else if (pozition.equalsIgnoreCase("DEF")) {
+					templist = user.getTeam().getPlayers().get(i).getTeam().getAllDEFplayers();
+				} else if (pozition.equalsIgnoreCase("MID")) {
+					templist = user.getTeam().getPlayers().get(i).getTeam().getAllMIDplayers();
+				} else {
+					templist = user.getTeam().getPlayers().get(i).getTeam().getAllFWplayers();
+				}
+				dataForSellPlayer[index][2] = Integer.toString(user.getTeam().getPlayers().get(i).getStrength());
+				dataForSellPlayer[index][3] = Double.toString(user.getTeam().getPlayers().get(i).getValue());
+				dataForSellPlayer[index][4] = user.getTeam().getPlayers().get(i).getTeam().getName();
+				dataForSellPlayer[index][5] = Integer.toString(templist.size());
+				dataForSellPlayer[index][6] = Integer.toString(user.getTeam().getPlayers().get(i).getScoreCount());
+				dataForSellPlayer[index][7] = Integer.toString(user.getTeam().getPlayers().get(i).getAssistCount());
+				index++;
+			}
+
+		}
+
+	}
+
+	public void updatePlayerForTransfer(FootballLeague lg) {
+		for (int i = 0; i < lg.getAllPlayers().size(); i++) {
+			dataForTransfer[i][0] = lg.getAllPlayers().get(i).getName();
+			dataForTransfer[i][1] = lg.getAllPlayers().get(i).getPosition();
+			String pozition = lg.getAllPlayers().get(i).getPosition();
+			ArrayList<Player> templist;
+			if (pozition.equalsIgnoreCase("GK")) {
+				templist = lg.getAllPlayers().get(i).getTeam().getAllGKplayers();
+			} else if (pozition.equalsIgnoreCase("DEF")) {
+				templist = lg.getAllPlayers().get(i).getTeam().getAllDEFplayers();
+			} else if (pozition.equalsIgnoreCase("MID")) {
+				templist = lg.getAllPlayers().get(i).getTeam().getAllMIDplayers();
+			} else {
+				templist = lg.getAllPlayers().get(i).getTeam().getAllFWplayers();
+			}
+			dataForTransfer[i][2] = Integer.toString(lg.getAllPlayers().get(i).getStrength());
+			dataForTransfer[i][3] = Double.toString(lg.getAllPlayers().get(i).getValue());
+			dataForTransfer[i][4] = lg.getAllPlayers().get(i).getTeam().getName();
+			dataForTransfer[i][5] = Integer.toString(templist.size());
+			dataForTransfer[i][6] = Integer.toString(lg.getAllPlayers().get(i).getScoreCount());
+			dataForTransfer[i][7] = Integer.toString(lg.getAllPlayers().get(i).getAssistCount());
 		}
 
 	}
@@ -152,6 +221,7 @@ public class MainGUI extends JFrame {
 			}
 
 		}
+		System.out.println();
 
 	}
 
@@ -351,6 +421,8 @@ public class MainGUI extends JFrame {
 				btnPlay.setEnabled(false);
 				updateScoreBoard(lg);
 				sortedTeams = TeamsSortingForSB(sortedTeams); // sort scoreboard
+				updatePlayerForTransfer(lg);
+				updatePlayerForSell(user);
 				updateStandings(sortedTeams);
 				updateStatsPanel(lg, dataGoalKingdom, dataAssistKingdom, dataBestScorerTeam, dataLeastScorerTeam,
 						dataTeamsWithTheMostGoalTaken, dataTeamsWithTheLeastGoalTaken);
@@ -456,9 +528,6 @@ public class MainGUI extends JFrame {
 		lblShowTeamStrength.setBounds(56, 520, 185, 67);
 		panelArrangeTeam.add(lblShowTeamStrength);
 
-		JTable tableCurrentPlayers;
-		JTable tableReservePlayers;
-
 		String[] playerDataColumn = { "NAME", "POSITION", "STRENGTH" };
 		dataCurrentPlayer = new String[user.getTeam().getFirstEleven().size()][playerDataColumn.length];
 		dataReservePlayer = new String[user.getTeam().getPlayers().size()
@@ -481,7 +550,7 @@ public class MainGUI extends JFrame {
 		scrollForReservePlayers.setBounds(377, 85, 284, 335);
 		panelArrangeTeam.add(scrollForReservePlayers);
 
-		tableReservePlayers = new JTable(dataReservePlayer, playerDataColumn);
+		tableReservePlayers = new JTable(new DefaultTableModel(dataReservePlayer, playerDataColumn));
 		tableReservePlayers.setDefaultEditor(Object.class, null);
 		tableReservePlayers.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollForReservePlayers.setViewportView(tableReservePlayers);
@@ -494,9 +563,10 @@ public class MainGUI extends JFrame {
 		updateTeamLineUpDisplay(labelFirstEleven, user, panelArrangeTeam);
 
 		JLabel lblLineUp = new JLabel(new ImageIcon("lineup.png"));
-		lblLineUp.setBounds(706, -21, 526, 672);
+		lblLineUp.setBounds(743, -31, 460, 672);
 		panelArrangeTeam.add(lblLineUp);
-
+		String[] playerTransferColumn = { "NAME", "POSITION", "STRENGTH", "VALUE", "TEAM", "NUMBER OF SAME POSITION",
+				"SCORE", "ASIST" };
 		btnChangePlayer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -539,10 +609,15 @@ public class MainGUI extends JFrame {
 						team.removeFW(outPlayer);
 					}
 
+					
 					updateFirstElevenTable(dataCurrentPlayer, user);
 					updateReservePlayerTable(dataReservePlayer, user);
-					updateTeamLineUpDisplay(labelFirstEleven, user, panelArrangeTeam);
+					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
+					updateTeamLineUpDisplay(labelFirstEleven, user, panelArrangeTeam);	
+					updatePlayerForSell(user);
+					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
 					team.determinePower(team.getFirstEleven());
+
 					lblShowTeamStrength
 							.setText("Total strength:" + " " + Integer.toString(user.getTeam().getTeamStrength()));
 					repaint();
@@ -551,14 +626,22 @@ public class MainGUI extends JFrame {
 			}
 		});
 
-		JPanel panelPlayerMarket = new JPanel();
-		tabbedPane.addTab("Player Market", null, panelPlayerMarket, null);
+		
+
+		dataForSellPlayer = new String[user.getTeam().getPlayers().size()
+				- user.getTeam().getFirstEleven().size()][playerTransferColumn.length];
+		dataForTransfer = new String[lg.getAllPlayers().size()][playerTransferColumn.length];
+
+		lg.getAllPlayers().sort(comparing(Player::getValue));
+		Collections.reverse(lg.getAllPlayers());
+		updatePlayerForSell(user);
+		updatePlayerForTransfer(lg);
 
 		JPanel panelStats = new JPanel();
 		tabbedPane.addTab("Statistics", null, panelStats, null);
 		panelStats.setLayout(null);
 
-		String[] kingdomStatsColumn = { "NAME", "TEAM","POSITION", "COUNT" };
+		String[] kingdomStatsColumn = { "NAME", "TEAM", "POSITION", "COUNT" };
 		String[] teamStatsColumn = { "NAME", "RANKING", "COUNT" };
 
 		JTable tableGoalKingdom;
@@ -568,8 +651,8 @@ public class MainGUI extends JFrame {
 		JTable tableTeamWithTheMostGoalTaken;
 		JTable tableTeamWithTheLeastGoalTaken;
 
-		dataGoalKingdom = new String[5][kingdomStatsColumn.length];		
-		dataAssistKingdom = new String[5][kingdomStatsColumn.length];	
+		dataGoalKingdom = new String[5][kingdomStatsColumn.length];
+		dataAssistKingdom = new String[5][kingdomStatsColumn.length];
 		dataBestScorerTeam = new String[5][teamStatsColumn.length];
 		dataLeastScorerTeam = new String[5][teamStatsColumn.length];
 		dataTeamsWithTheMostGoalTaken = new String[5][teamStatsColumn.length];
@@ -582,7 +665,7 @@ public class MainGUI extends JFrame {
 		lblGoalKingdom.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblGoalKingdom.setBounds(107, 25, 141, 17);
 		panelStats.add(lblGoalKingdom);
-		
+
 		JScrollPane scrollPaneGoalKingdom = new JScrollPane();
 		scrollPaneGoalKingdom.setBounds(24, 77, 321, 115);
 		panelStats.add(scrollPaneGoalKingdom);
@@ -594,7 +677,7 @@ public class MainGUI extends JFrame {
 		lblAssistKingdom.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblAssistKingdom.setBounds(551, 22, 119, 23);
 		panelStats.add(lblAssistKingdom);
-		
+
 		JScrollPane scrollPaneAssistKingdom = new JScrollPane();
 		scrollPaneAssistKingdom.setBounds(436, 77, 347, 115);
 		panelStats.add(scrollPaneAssistKingdom);
@@ -606,7 +689,7 @@ public class MainGUI extends JFrame {
 		lblBestScorerTeams.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblBestScorerTeams.setBounds(70, 358, 151, 23);
 		panelStats.add(lblBestScorerTeams);
-		
+
 		JScrollPane scrollPaneBestScorerTeams = new JScrollPane();
 		scrollPaneBestScorerTeams.setBounds(41, 422, 207, 115);
 		panelStats.add(scrollPaneBestScorerTeams);
@@ -618,7 +701,7 @@ public class MainGUI extends JFrame {
 		lblLeastScorerTeams.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblLeastScorerTeams.setBounds(519, 363, 151, 13);
 		panelStats.add(lblLeastScorerTeams);
-		
+
 		JScrollPane scrollPaneLeastScorerTeams = new JScrollPane();
 		scrollPaneLeastScorerTeams.setBounds(489, 422, 217, 115);
 		panelStats.add(scrollPaneLeastScorerTeams);
@@ -630,7 +713,7 @@ public class MainGUI extends JFrame {
 		lblTeamWithTheMostGoalTaken.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblTeamWithTheMostGoalTaken.setBounds(945, 27, 267, 13);
 		panelStats.add(lblTeamWithTheMostGoalTaken);
-		
+
 		JScrollPane scrollPaneTeamWithTheMostGoalTaken = new JScrollPane();
 		scrollPaneTeamWithTheMostGoalTaken.setBounds(922, 77, 267, 107);
 		panelStats.add(scrollPaneTeamWithTheMostGoalTaken);
@@ -642,13 +725,165 @@ public class MainGUI extends JFrame {
 		lblTeamWithTheLeastGoalTaken.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblTeamWithTheLeastGoalTaken.setBounds(957, 363, 278, 13);
 		panelStats.add(lblTeamWithTheLeastGoalTaken);
-		
+
 		JScrollPane scrollPaneTeamWithTheLeastGoalTaken = new JScrollPane();
 		scrollPaneTeamWithTheLeastGoalTaken.setBounds(922, 422, 267, 107);
 		panelStats.add(scrollPaneTeamWithTheLeastGoalTaken);
 
 		tableTeamWithTheLeastGoalTaken = new JTable(dataTeamsWithTheLeastGoalTaken, teamStatsColumn);
 		scrollPaneTeamWithTheLeastGoalTaken.setViewportView(tableTeamWithTheLeastGoalTaken);
+
+		JPanel panelPlayerMarket = new JPanel();
+		panelPlayerMarket.setForeground(Color.BLACK);
+		tabbedPane.addTab("Player Market", null, panelPlayerMarket, null);
+		panelPlayerMarket.setLayout(null);
+
+		JScrollPane scrollForSellPlayer = new JScrollPane();
+		scrollForSellPlayer.setBounds(633, 85, 600, 347);
+		panelPlayerMarket.add(scrollForSellPlayer);
+		// -------------------------------------
+		JScrollPane scrollForTransfer = new JScrollPane();
+		scrollForTransfer.setBounds(10, 85, 600, 347);
+		panelPlayerMarket.add(scrollForTransfer);
+
+		tableForSellPlayer = new JTable(dataForSellPlayer, playerTransferColumn);
+		tableForSellPlayer.setDefaultEditor(Object.class, null);
+		tableForSellPlayer.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollForSellPlayer.setViewportView(tableForSellPlayer);
+
+		tableForPlayerMarket = new JTable(dataForTransfer, playerTransferColumn);
+		tableForPlayerMarket.setDefaultEditor(Object.class, null);
+		tableForPlayerMarket.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollForTransfer.setViewportView(tableForPlayerMarket);
+
+		JLabel TransferLabel = new JLabel("");
+		TransferLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		TransferLabel.setForeground(Color.BLACK);
+		TransferLabel.setBackground(Color.GREEN);
+		TransferLabel.setBounds(428, 511, 311, 51);
+		panelPlayerMarket.add(TransferLabel);
+
+		JLabel lblTeamNameForTransfer = new JLabel("Team : " + user.getTeam().getName());
+		lblTeamNameForTransfer.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblTeamNameForTransfer.setBounds(630, 10, 311, 51);
+		panelPlayerMarket.add(lblTeamNameForTransfer);
+
+		JLabel lblBudgetForTransfer = new JLabel("Budget: " + user.getTeam().getBudget());
+		lblBudgetForTransfer.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblBudgetForTransfer.setBounds(1001, 10, 297, 51);
+		panelPlayerMarket.add(lblBudgetForTransfer);
+
+		JButton btnTransfer = new JButton("Perform The Transfer");
+		btnTransfer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				// If user did not select two players to exchange
+				if (tableForPlayerMarket.getSelectedRow() == -1) {
+					JOptionPane.showMessageDialog(null, "You MUST select one players from list !", "Error",
+							JOptionPane.ERROR_MESSAGE);
+
+					return; // quit function
+				}
+				FootballTeam team = user.getTeam();
+				Player PurchasedPlayer = lg
+						.getPlayerByNameFromlg(dataForTransfer[tableForPlayerMarket.getSelectedRow()][0]);
+				FootballTeam tempTeam = PurchasedPlayer.getTeam();
+				boolean flagForTransfer = lg.makeTransfer(PurchasedPlayer, team);
+
+				if (flagForTransfer == false) {
+					JOptionPane.showMessageDialog(null,
+							"The transfer did not take place. Please check the number of players in the same "
+									+ "position on the player's team, the total number of players in the team, and your budget.!",
+							"Error", JOptionPane.ERROR_MESSAGE);
+
+					return; // quit function
+				} else {
+					tempTeam.determineFirstEleven();
+					TransferLabel.setText("THE TRANSFER HAS TAKEN PLACE.");
+					dataReservePlayer = new String[user.getTeam().getPlayers().size()
+							- user.getTeam().getFirstEleven().size()][playerDataColumn.length];
+					dataForSellPlayer = new String[user.getTeam().getPlayers().size()
+							- user.getTeam().getFirstEleven().size()][playerTransferColumn.length];
+
+					updatePlayerForTransfer(lg);
+					updatePlayerForSell(user);
+					updateReservePlayerTable(dataReservePlayer, user);
+					updateStatsPanel(lg, dataGoalKingdom, dataAssistKingdom, dataBestScorerTeam, dataLeastScorerTeam,
+							dataTeamsWithTheMostGoalTaken, dataTeamsWithTheLeastGoalTaken);
+					// tableReservePlayers = new JTable(dataReservePlayer, playerDataColumn);
+					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
+					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
+					lblBudgetForTransfer.setText("Budget: " + user.getTeam().getBudget());
+					lblBudget.setText("Budget: " + user.getTeam().getBudget());
+					repaint();
+				}
+			}
+		});
+
+		btnTransfer.setBackground(Color.GREEN);
+		btnTransfer.setForeground(Color.BLACK);
+		btnTransfer.setBounds(94, 482, 188, 113);
+		panelPlayerMarket.add(btnTransfer);
+
+		JLabel lblAllForTransfer = new JLabel("Purchase Players ");
+		lblAllForTransfer.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblAllForTransfer.setBounds(216, 41, 224, 55);
+		panelPlayerMarket.add(lblAllForTransfer);
+
+		JButton btnForSellPlayer = new JButton("Sell The Player");
+		btnForSellPlayer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (tableForSellPlayer.getSelectedRow() == -1) {
+					JOptionPane.showMessageDialog(null, "You MUST select one players from list !", "Error",
+							JOptionPane.ERROR_MESSAGE);
+
+					return; // quit function
+				}
+
+				FootballTeam team = user.getTeam();
+				Player SoldPlayer = lg.getPlayerByNameFromlg(dataForSellPlayer[tableForSellPlayer.getSelectedRow()][0]);
+				boolean flagForSellPlayer = lg.SellPlayer(SoldPlayer, lg);
+
+				if (flagForSellPlayer == false) {
+					JOptionPane.showMessageDialog(null,
+							"The transfer did not take place. Please check the number of players in the same "
+									+ "position on the player's team, the total number of players in the team !",
+							"Error", JOptionPane.ERROR_MESSAGE);
+
+					return; // quit function
+				} else {
+					TransferLabel.setText("PLAYER SOLD !!!");
+
+					dataReservePlayer = new String[user.getTeam().getPlayers().size()
+							- user.getTeam().getFirstEleven().size()][playerDataColumn.length];
+
+					dataForSellPlayer = new String[user.getTeam().getPlayers().size()
+							- user.getTeam().getFirstEleven().size()][playerTransferColumn.length];
+					updatePlayerForTransfer(lg);
+					updatePlayerForSell(user);
+
+					updateReservePlayerTable(dataReservePlayer, user);
+					updateStatsPanel(lg, dataGoalKingdom, dataAssistKingdom, dataBestScorerTeam, dataLeastScorerTeam,
+							dataTeamsWithTheMostGoalTaken, dataTeamsWithTheLeastGoalTaken);
+					// tableReservePlayers = new JTable(dataReservePlayer, playerDataColumn);
+					tableReservePlayers.setModel(new DefaultTableModel(dataReservePlayer, playerDataColumn));
+					tableForSellPlayer.setModel(new DefaultTableModel(dataForSellPlayer, playerTransferColumn));
+
+					lblBudgetForTransfer.setText("Budget: " + user.getTeam().getBudget());
+					lblBudget.setText("Budget: " + user.getTeam().getBudget());
+					repaint();
+				}
+			}
+		});
+		btnForSellPlayer.setBackground(Color.RED);
+		btnForSellPlayer.setBounds(951, 482, 188, 113);
+		panelPlayerMarket.add(btnForSellPlayer);
+		
+		JLabel lblTransferTitle = new JLabel("Sell Your Own Players");
+		lblTransferTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblTransferTitle.setBounds(836, 62, 410, 13);
+		panelPlayerMarket.add(lblTransferTitle);
 
 		System.out.println();
 
