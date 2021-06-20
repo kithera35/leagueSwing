@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Queue;
+import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -259,40 +261,53 @@ public class MainGUI extends JFrame {
 			String[][] dataBestScorerTeam, String[][] dataLeastScorerTeam, String[][] dataTeamsWithTheMostGoalTaken,
 			String[][] dataTeamsWithTheLeastGoalTaken) {
 
-		ArrayList<Player> bestScorerPlayer = lg.getBestScorerPlayer();
-		ArrayList<Player> bestAssisterPlayer = lg.getBestAssisterPlayer();
-		ArrayList<FootballTeam> bestScorerTeam = lg.getBestScorerTeams();
-		ArrayList<FootballTeam> leastScorerTeam = lg.getLeastScorerTeams();
-		ArrayList<FootballTeam> mostGoalTakenTeams = lg.mostGoalTakenTeams();
-		ArrayList<FootballTeam> leastGoalTakenTeams = lg.leastGoalTakenTeams();
+		Stack<Player> bestScorerPlayer = lg.getBestScorerPlayer();
+		Stack<Player> bestAssisterPlayer = lg.getBestAssisterPlayer();
+		Stack<FootballTeam> bestScorerTeam = lg.getBestScorerTeams();
+		Queue<FootballTeam> leastScorerTeam = lg.getLeastScorerTeams();
+		Stack<FootballTeam> mostGoalTakenTeams = lg.mostGoalTakenTeams();
+		Queue<FootballTeam> leastGoalTakenTeams = lg.leastGoalTakenTeams();
 
 		// building up sorted stats
 		for (int i = 0; i < 5; i++) {
-			dataGoalKingdom[i][0] = bestScorerPlayer.get(i).getName();
-			dataGoalKingdom[i][1] = bestScorerPlayer.get(i).getTeam().getName();
-			dataGoalKingdom[i][2] = bestScorerPlayer.get(i).getPosition();
-			dataGoalKingdom[i][3] = Integer.toString(bestScorerPlayer.get(i).getScoreCount());
+			Player stackPlayer=bestScorerPlayer.pop();
+			
+			
+			dataGoalKingdom[i][0] = stackPlayer.getName();
+			dataGoalKingdom[i][1] = stackPlayer.getTeam().getName();
+			dataGoalKingdom[i][2] = stackPlayer.getPosition();
+			dataGoalKingdom[i][3] = Integer.toString(stackPlayer.getScoreCount());
 
-			dataAssistKingdom[i][0] = bestAssisterPlayer.get(i).getName();
-			dataAssistKingdom[i][1] = bestAssisterPlayer.get(i).getTeam().getName();
-			dataAssistKingdom[i][2] = bestAssisterPlayer.get(i).getPosition();
-			dataAssistKingdom[i][3] = Integer.toString(bestAssisterPlayer.get(i).getAssistCount());
+			stackPlayer=bestAssisterPlayer.pop();
+			
+			dataAssistKingdom[i][0] = stackPlayer.getName();
+			dataAssistKingdom[i][1] = stackPlayer.getTeam().getName();
+			dataAssistKingdom[i][2] = stackPlayer.getPosition();
+			dataAssistKingdom[i][3] = Integer.toString(stackPlayer.getAssistCount());
+			
+			FootballTeam t=bestScorerTeam.pop();
 
-			dataBestScorerTeam[i][0] = bestScorerTeam.get(i).getName();
-			dataBestScorerTeam[i][1] = Integer.toString(bestScorerTeam.get(i).getRanking());
-			dataBestScorerTeam[i][2] = Integer.toString(bestScorerTeam.get(i).getGoalScored());
+			dataBestScorerTeam[i][0] = t.getName();
+			dataBestScorerTeam[i][1] = Integer.toString(t.getRanking());
+			dataBestScorerTeam[i][2] = Integer.toString(t.getGoalScored());
+			
+			t=leastScorerTeam.poll();
 
-			dataLeastScorerTeam[i][0] = leastScorerTeam.get(i).getName();
-			dataLeastScorerTeam[i][1] = Integer.toString(leastScorerTeam.get(i).getRanking());
-			dataLeastScorerTeam[i][2] = Integer.toString(leastScorerTeam.get(i).getGoalScored());
+			dataLeastScorerTeam[i][0] = t.getName();
+			dataLeastScorerTeam[i][1] = Integer.toString(t.getRanking());
+			dataLeastScorerTeam[i][2] = Integer.toString(t.getGoalScored());
+			
+			t=mostGoalTakenTeams.pop();
 
-			dataTeamsWithTheMostGoalTaken[i][0] = mostGoalTakenTeams.get(i).getName();
-			dataTeamsWithTheMostGoalTaken[i][1] = Integer.toString(mostGoalTakenTeams.get(i).getRanking());
-			dataTeamsWithTheMostGoalTaken[i][2] = Integer.toString(mostGoalTakenTeams.get(i).getGoalTaken());
+			dataTeamsWithTheMostGoalTaken[i][0] = t.getName();
+			dataTeamsWithTheMostGoalTaken[i][1] = Integer.toString(t.getRanking());
+			dataTeamsWithTheMostGoalTaken[i][2] = Integer.toString(t.getGoalTaken());
+			
+			t=leastGoalTakenTeams.poll();
 
-			dataTeamsWithTheLeastGoalTaken[i][0] = leastGoalTakenTeams.get(i).getName();
-			dataTeamsWithTheLeastGoalTaken[i][1] = Integer.toString(leastGoalTakenTeams.get(i).getRanking());
-			dataTeamsWithTheLeastGoalTaken[i][2] = Integer.toString(leastGoalTakenTeams.get(i).getGoalTaken());
+			dataTeamsWithTheLeastGoalTaken[i][0] = t.getName();
+			dataTeamsWithTheLeastGoalTaken[i][1] = Integer.toString(t.getRanking());
+			dataTeamsWithTheLeastGoalTaken[i][2] = Integer.toString(t.getGoalTaken());
 
 		}
 

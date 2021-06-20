@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Stack;
+
 import static java.util.Comparator.comparing;
 
 public class FootballLeague implements ILeague {
@@ -554,52 +558,74 @@ public class FootballLeague implements ILeague {
 
 	}
 
-	public ArrayList<Player> getBestScorerPlayer() {
+	public Stack<Player> getBestScorerPlayer() {
+		Stack<Player> s1 = new Stack<>();
 		ArrayList<Player> temp = new ArrayList<>();
 		temp.addAll(allPlayers);
 		temp.sort(comparing(Player::getScoreCount));
-
-		Collections.reverse(temp);
-		return temp;
+		for(Player p: temp) {
+			s1.push(p);
+		}
+		
+		return s1;
 	}
 
-	public ArrayList<Player> getBestAssisterPlayer() {
+	public Stack<Player> getBestAssisterPlayer() {
+		Stack<Player> s1 = new Stack<>();
 		ArrayList<Player> temp = new ArrayList<>();
 		temp.addAll(allPlayers);
 		temp.sort(comparing(Player::getAssistCount));
-		Collections.reverse(temp);
-		return temp;
+		for(Player p: temp) {
+			s1.push(p);
+		}
+		
+		return s1;
 	}
 
-	public ArrayList<FootballTeam> getBestScorerTeams() {
+	public Stack<FootballTeam> getBestScorerTeams() {
+		Stack<FootballTeam> s1 = new Stack<>();
 		ArrayList<FootballTeam> temp = new ArrayList<>();
 		temp.addAll(teams);
 		temp.sort(comparing(FootballTeam::getGoalScored));
-		Collections.reverse(temp);
-		return temp;
+		for(FootballTeam p: temp) {
+			s1.push(p);
+		}
+		
+		return s1;
 	}
 
-	public ArrayList<FootballTeam> getLeastScorerTeams() {
+	public Queue<FootballTeam> getLeastScorerTeams() {
+		Queue<FootballTeam> q = new LinkedList<FootballTeam>();
 		ArrayList<FootballTeam> temp = new ArrayList<>();
 		temp.addAll(teams);
 		temp.sort(comparing(FootballTeam::getGoalScored));
-		return temp;
+		for(FootballTeam p: temp) {
+			q.add(p);
+		}
+		return q;
 	}
 
-	public ArrayList<FootballTeam> mostGoalTakenTeams() {
+	public Stack<FootballTeam> mostGoalTakenTeams() {
+		Stack<FootballTeam> s1 = new Stack<>();
 		ArrayList<FootballTeam> temp = new ArrayList<>();
 		temp.addAll(teams);
 		temp.sort(comparing(FootballTeam::getGoalTaken));
-		Collections.reverse(temp);
-		return temp;
+		for(FootballTeam p: temp) {
+			s1.push(p);
+		}
+		
+		return s1;
 	}
 
-	public ArrayList<FootballTeam> leastGoalTakenTeams() {
+	public Queue<FootballTeam> leastGoalTakenTeams() {
+		Queue<FootballTeam> q = new LinkedList<FootballTeam>();
 		ArrayList<FootballTeam> temp = new ArrayList<>();
 		temp.addAll(teams);
 		temp.sort(comparing(FootballTeam::getGoalTaken));
-
-		return temp;
+		for(FootballTeam p: temp) {
+			q.add(p);
+		}
+		return q;
 	}
 
 	public ArrayList<FootballTeam> getTeams() {
